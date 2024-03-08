@@ -119,7 +119,7 @@ export default function App() {
     <CacheProvider value={rtlCache}>
       <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
         <CssBaseline />
-        {layout === "perfil" && (
+        {layout === "dashboard" && (
           <>
             <Sidenav
               color={sidenavColor}

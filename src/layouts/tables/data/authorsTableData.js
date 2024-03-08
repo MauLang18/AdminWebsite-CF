@@ -28,7 +28,7 @@ export default function MyComponent() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5218/api/TrackingLogin/Activo?cliente=${name}`
+          `https://api.logisticacastrofallas.com/api/TrackingLogin/Activo?cliente=${name}`
         );
         setApiData(response.data.data.value);
       } catch (error) {

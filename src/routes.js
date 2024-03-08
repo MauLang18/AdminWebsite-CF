@@ -50,10 +50,12 @@ const routes = [
     component: <Notifications />,
   },*/
   {
-    route: "/authentication/sign-in",
+    key: "login",
+    route: "/",
     component: <SignIn />,
   },
   {
+    key: "registro",
     route: "/authentication/sign-up",
     component: <SignUp />,
   },

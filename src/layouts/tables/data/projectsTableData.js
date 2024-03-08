@@ -28,7 +28,7 @@ export default function data() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5218/api/TrackingLogin/Finalizado?cliente=${name}`
+          `https://api.logisticacastrofallas.com/api/TrackingLogin/Finalizado?cliente=${name}`
         );
         setApiData(response.data.data.value);
       } catch (error) {
