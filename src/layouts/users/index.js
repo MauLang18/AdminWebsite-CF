@@ -6,9 +6,9 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
 // Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
+import Projects from "layouts/users/components/Projects";
 
-function Dashboard() {
+function Users() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -20,4 +20,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Users;

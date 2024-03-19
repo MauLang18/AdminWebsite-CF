@@ -45,7 +45,10 @@ function Footer({ company, links }) {
         fontSize={size.sm}
         px={1.5}
       >
-        &copy; {new Date().getFullYear()}, Grupo Castro Fallas
+        &copy; {new Date().getFullYear()},{""}
+        <a target="blank" href="https://customcode-2c2f5.web.app/">
+          CustomCodeCR
+        </a>
         <MDBox fontSize={size.md} color="text" mb={-0.5} mx={0.25}></MDBox>
       </MDBox>
     </MDBox>

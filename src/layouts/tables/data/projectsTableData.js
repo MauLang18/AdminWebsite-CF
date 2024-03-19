@@ -114,6 +114,8 @@ export default function data() {
       { Header: "BULTOS", accessor: "bultos", align: "center" },
       { Header: "Shipper", accessor: "shipper", align: "center" },
       { Header: "Commodity", accessor: "commodity", align: "center" },
+      { Header: "Tarifa Asignada", accessor: "tarifa", align: "center" },
+      { Header: "Estimado Facturar", accessor: "costo", align: "center" },
       { Header: "Facturas CF", accessor: "facturasCf", align: "center" },
     ],
 
@@ -233,7 +235,7 @@ export default function data() {
           {getCantEquipoName(rowData.new_cantequipo)}
         </MDTypography>
       ),
-      cantEquipo: (
+      tamanoEquipo: (
         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
           {getTamanoEquipoName(rowData.new_tamaoequipo)}
         </MDTypography>
@@ -251,6 +253,16 @@ export default function data() {
       commodity: (
         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
           {rowData.new_commodity}
+        </MDTypography>
+      ),
+      tarifa: (
+        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          {rowData.new_new_facturacompaia}
+        </MDTypography>
+      ),
+      costo: (
+        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          {rowData.new_new_facturacompaia}
         </MDTypography>
       ),
       facturasCf: (

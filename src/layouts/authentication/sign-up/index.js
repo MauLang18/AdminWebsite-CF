@@ -17,7 +17,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import axios from "axios";
 
 // Images
-import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+import bgImage from "assets/images/bg-sign-in-basic.jpg";
 
 function Cover() {
   const handleSubmit = async (event) => {

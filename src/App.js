@@ -1,30 +1,20 @@
 import { useState, useEffect, useMemo } from "react";
-
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
-
 import MDBox from "components/MDBox";
-
 import Sidenav from "examples/Sidenav";
 import Configurator from "examples/Configurator";
-
 import theme from "assets/theme";
 import themeRTL from "assets/theme/theme-rtl";
-
 import themeDark from "assets/theme-dark";
 import themeDarkRTL from "assets/theme-dark/theme-rtl";
-
 import rtlPlugin from "stylis-plugin-rtl";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-
 import routes from "routes";
-
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
-
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
@@ -78,18 +68,30 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  const getRoutes = (allRoutes) =>
-    allRoutes.map((route) => {
-      if (route.collapse) {
-        return getRoutes(route.collapse);
-      }
+  const getRoutesForUser = (allRoutes) => {
+    const userType = localStorage.getItem("users");
 
-      if (route.route) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />;
-      }
+    if (userType) {
+      const { given_name } = JSON.parse(userType);
 
-      return null;
-    });
+      return allRoutes
+        .map((route) => {
+          if (route.collapse) {
+            const filteredRoutes = getRoutesForUser(route.collapse);
+            return filteredRoutes.some((r) => r) ? { ...route, collapse: filteredRoutes } : null;
+          }
+          if (route.route && route.accessibleFor.includes(given_name)) {
+            return <Route exact path={route.route} element={route.component} key={route.key} />;
+          }
+          return null;
+        })
+        .filter((route) => route !== null);
+    } else {
+      // Manejar el caso en que no haya un usuario definido en localStorage
+      // Puedes redirigir a la página de inicio de sesión u otro comportamiento
+      return [];
+    }
+  };
 
   const configsButton = (
     <MDBox
@@ -135,7 +137,7 @@ export default function App() {
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
-          {getRoutes(routes)}
+          {getRoutesForUser(routes)}
           <Route path="*" element={<Navigate to="/perfil" />} />
         </Routes>
       </ThemeProvider>
@@ -159,7 +161,7 @@ export default function App() {
       )}
       {layout === "vr" && <Configurator />}
       <Routes>
-        {getRoutes(routes)}
+        {getRoutesForUser(routes)}
         <Route path="*" element={<Navigate to="/perfil" />} />
       </Routes>
     </ThemeProvider>

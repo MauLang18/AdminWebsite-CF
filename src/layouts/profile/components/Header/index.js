@@ -26,7 +26,7 @@ function Header({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
   const user = JSON.parse(localStorage.getItem("users"));
-  const { given_name, family_name, unique_name, nameid, name, email } = user;
+  const { given_name, family_name, unique_name, nameid, name, email, c_hash } = user;
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -63,7 +63,7 @@ function Header({ children }) {
             `${linearGradient(
               rgba(gradients.info.main, 0.6),
               rgba(gradients.info.state, 0.6)
-            )}, url(${backgroundImage})`,
+            )}, url(${c_hash})`,
           backgroundSize: "cover",
           backgroundPosition: "50%",
           overflow: "hidden",

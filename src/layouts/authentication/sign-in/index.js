@@ -6,7 +6,7 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
-import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import bgImage from "assets/images/bg-sign-in-basic.jpg";
 import toast from "react-hot-toast";
 
 function Basic() {
@@ -48,6 +48,7 @@ function Basic() {
 
         const user = JSON.parse(decodedPayload);
         localStorage.setItem("users", JSON.stringify(user));
+        localStorage.setItem("bearer", result.data);
         toast.success("Login Successfully");
 
         const { given_name } = user;
