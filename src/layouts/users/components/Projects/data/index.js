@@ -113,6 +113,7 @@ export default function data() {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
+        Accept: "*/*",
       },
       body: formData,
     })
@@ -128,7 +129,13 @@ export default function data() {
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    setSelectedImage(URL.createObjectURL(file));
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSelectedImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return {

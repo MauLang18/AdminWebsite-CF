@@ -60,6 +60,10 @@ function Projects() {
 
     fetch("https://api.logisticacastrofallas.com/api/Usuario/Register", {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "*/*",
+      },
       body: formData,
     })
       .then((response) => response.json())
