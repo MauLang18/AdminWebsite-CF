@@ -56,6 +56,7 @@ function Projects() {
     formData.append("idRol", rol);
     formData.append("estado", estado);
     formData.append("imagen", selectedImage);
+    formData.append("tipo", "Interno");
 
     fetch("https://api.logisticacastrofallas.com/api/Usuario/Register", {
       method: "POST",

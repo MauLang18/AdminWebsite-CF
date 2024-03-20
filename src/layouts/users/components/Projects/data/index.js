@@ -48,6 +48,9 @@ export default function data() {
     // Lógica para eliminar usuario con el ID proporcionado
     fetch(`https://api.logisticacastrofallas.com/api/Usuario/Remove/${userId}`, {
       method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -98,6 +101,7 @@ export default function data() {
     formData.append("cliente", cliente);
     formData.append("idRol", rol);
     formData.append("estado", estado);
+    formData.append("tipo", "Interno");
 
     // Agregar la imagen si está seleccionada
     if (selectedImage) {
@@ -105,7 +109,7 @@ export default function data() {
     }
 
     // Realizar la solicitud al servidor
-    fetch(`https://api.logisticacastrofallas.com/api/Usuario/Update/${selectedUserId}`, {
+    fetch(`https://api.logisticacastrofallas.com/api/Usuario/Edit/${selectedUserId}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,

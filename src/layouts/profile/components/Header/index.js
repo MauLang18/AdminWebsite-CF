@@ -26,7 +26,7 @@ function Header({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
   const user = JSON.parse(localStorage.getItem("users"));
-  const { given_name, family_name, unique_name, nameid, name, email, c_hash } = user;
+  const { given_name, family_name, acr, gender, email } = user;
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -63,7 +63,7 @@ function Header({ children }) {
             `${linearGradient(
               rgba(gradients.info.main, 0.6),
               rgba(gradients.info.state, 0.6)
-            )}, url(${c_hash})`,
+            )}, url(${gender})`,
           backgroundSize: "cover",
           backgroundPosition: "50%",
           overflow: "hidden",
@@ -95,7 +95,7 @@ function Header({ children }) {
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
               <MDTypography variant="h5" fontWeight="medium">
-                {name === "" ? "" : name}
+                {acr === "" ? "" : acr}
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
                 {given_name === "1" ? "Admin" : "Usuario"}
