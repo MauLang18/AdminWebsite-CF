@@ -6,10 +6,7 @@ import PropTypes from "prop-types";
 // @mui material components
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import AppBar from "@mui/material/AppBar";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Icon from "@mui/material/Icon";
+import Button from "@mui/material/Button";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -26,7 +23,11 @@ function Header({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
   const user = JSON.parse(localStorage.getItem("users"));
-  const { given_name, family_name, acr, gender, email } = user;
+  const given_name = user ? user.given_name : "";
+  const family_name = user ? user.family_name : "";
+  const acr = user ? user.acr : "";
+  const gender = user ? user.gender : "";
+  const email = user ? user.email : "";
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -100,6 +101,23 @@ function Header({ children }) {
               <MDTypography variant="button" color="text" fontWeight="regular">
                 {given_name === "1" ? "Admin" : "Usuario"}
               </MDTypography>
+            </MDBox>
+          </Grid>
+          <Grid item>
+            <MDBox height="100%" mt={0.5} lineHeight={1}>
+              {given_name === "1" && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  href="https://admin.logisticacastrofallas.com"
+                  sx={{
+                    backgroundColor: "#000", // Fondo negro
+                    color: "#fff", // Letras blancas
+                  }}
+                >
+                  Admin
+                </Button>
+              )}
             </MDBox>
           </Grid>
         </Grid>

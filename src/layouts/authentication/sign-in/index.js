@@ -51,7 +51,7 @@ function Basic() {
         localStorage.setItem("bearer", result.data);
         toast.success("Login Successfully");
 
-        const { given_name } = user;
+        const given_name = user ? user.given_name : "";
 
         if (given_name === "2") {
           navigate("/user-dashboard");

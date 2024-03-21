@@ -23,8 +23,8 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const userType = localStorage.getItem("users");
-  const { given_name } = JSON.parse(userType);
+  const user = JSON.parse(localStorage.getItem("users"));
+  const given_name = user ? user.given_name : "";
 
   let textColor = "white";
 

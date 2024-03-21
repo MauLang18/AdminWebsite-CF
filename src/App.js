@@ -69,10 +69,10 @@ export default function App() {
   }, [pathname]);
 
   const getRoutesForUser = (allRoutes) => {
-    const userType = localStorage.getItem("users");
+    const user = JSON.parse(localStorage.getItem("users"));
 
-    if (userType) {
-      const { given_name } = JSON.parse(userType);
+    if (user) {
+      const given_name = user ? user.given_name : "";
 
       return allRoutes
         .map((route) => {
@@ -87,8 +87,6 @@ export default function App() {
         })
         .filter((route) => route !== null);
     } else {
-      // Manejar el caso en que no haya un usuario definido en localStorage
-      // Puedes redirigir a la página de inicio de sesión u otro comportamiento
       return [];
     }
   };
