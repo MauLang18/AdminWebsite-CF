@@ -87,7 +87,18 @@ export default function App() {
         })
         .filter((route) => route !== null);
     } else {
-      return [];
+      return allRoutes
+        .map((route) => {
+          if (route.collapse) {
+            const filteredRoutes = getRoutesForUser(route.collapse);
+            return filteredRoutes.some((r) => r) ? { ...route, collapse: filteredRoutes } : null;
+          }
+          if (route.route && route.accessibleFor.includes("")) {
+            return <Route exact path={route.route} element={route.component} key={route.key} />;
+          }
+          return null;
+        })
+        .filter((route) => route !== null);
     }
   };
 
