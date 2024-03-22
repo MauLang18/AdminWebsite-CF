@@ -121,22 +121,22 @@ export default function data() {
 
     rows: apiData.map((rowData) => ({
       IDTRA: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.title}
         </MDTypography>
       ),
       CONTENEDOR: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_contenedor}
         </MDTypography>
       ),
       BCF: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_bcf}
         </MDTypography>
       ),
       PO: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_po}
         </MDTypography>
       ),
@@ -151,122 +151,122 @@ export default function data() {
         </MDBox>
       ),
       status: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_statuscliente}
         </MDTypography>
       ),
       employed: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {formatDate(rowData.modifiedon)}
         </MDTypography>
       ),
       origen: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {getOrigenName(rowData.new_origen)}
         </MDTypography>
       ),
       destino: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {getDestinoName(rowData.new_destino)}
         </MDTypography>
       ),
       diaTransito: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_diasdetransito}
         </MDTypography>
       ),
       ETD: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {formatDate(rowData.new_etd1)}
         </MDTypography>
       ),
       POL: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {getPolName(rowData.new_pol)}
         </MDTypography>
       ),
       confZarpe: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {formatDate(rowData.new_confirmacinzarpe)}
         </MDTypography>
       ),
       buque: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          {rowData.new_nombrebuque}
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {rowData.new_barcodesalida}
         </MDTypography>
       ),
       viaje: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          {rowData.new_numeroviaje}
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {rowData.new_viajedesalida}
         </MDTypography>
       ),
       ETA: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {formatDate(rowData.new_eta)}
         </MDTypography>
       ),
       POE: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {getPoeName(rowData.new_poe)}
         </MDTypography>
       ),
       incoterm: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {getIncotermName(rowData.new_incoterm)}
         </MDTypography>
       ),
       transporte: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {getTransporteName(rowData.new_transporte)}
         </MDTypography>
       ),
       seal: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_seal}
         </MDTypography>
       ),
       factura: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_factura}
         </MDTypography>
       ),
       cantEquipo: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {getCantEquipoName(rowData.new_cantequipo)}
         </MDTypography>
       ),
       tamanoEquipo: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {getTamanoEquipoName(rowData.new_tamaoequipo)}
         </MDTypography>
       ),
       bultos: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_contidadbultos}
         </MDTypography>
       ),
       shipper: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData._new_shipper_value}
         </MDTypography>
       ),
       commodity: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_commodity}
         </MDTypography>
       ),
       tarifa: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          {rowData.new_new_facturacompaia}
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {rowData.new_ofertatarifaid}
         </MDTypography>
       ),
       costo: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_new_facturacompaia}
         </MDTypography>
       ),
       facturasCf: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {rowData.new_new_facturacompaia}
         </MDTypography>
       ),

@@ -4,10 +4,12 @@ import Billing from "layouts/billing";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import Cotizacion from "layouts/cotizacion";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 import Users from "layouts/users";
+import Tracking from "layouts/tracking";
 
 const routes = [
   {
@@ -58,7 +60,7 @@ const routes = [
     icon: <Icon fontSize="small">calendar_month</Icon>,
     route: "/itinerarios",
     accessibleFor: ["2"],
-    component: <Dashboard />,
+    component: <Billing />,
   },
   {
     type: "collapse",
@@ -67,7 +69,7 @@ const routes = [
     icon: <Icon fontSize="small">request_quote</Icon>,
     route: "/cotizacion",
     accessibleFor: ["2"],
-    component: <Dashboard />,
+    component: <Cotizacion />,
   },
   {
     type: "collapse",
@@ -76,7 +78,7 @@ const routes = [
     icon: <Icon fontSize="small">map</Icon>,
     route: "/tracking",
     accessibleFor: ["2"],
-    component: <Dashboard />,
+    component: <Tracking />,
   },
   {
     key: "login",

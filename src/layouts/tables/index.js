@@ -1,24 +1,34 @@
-// @mui material components
+import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
+import Button from "@mui/material/Button";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
-// Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
-
-// Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
+import { saveAs } from "file-saver";
+import SearchIcon from "@mui/icons-material/CloudDownloadTwoTone";
 
 function Tables() {
   const { columns, rows } = authorsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
+  const user = JSON.parse(localStorage.getItem("users"));
+  const { name } = user;
+
+  const handleDownloadExcel = () => {
+    fetch(`https://api.logisticacastrofallas.com/api/TrackingLogin/Activo/Download?cliente=${name}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        saveAs(blob, "tramites_activos.xlsx");
+      })
+      .catch((error) => {
+        console.error("Error al descargar el archivo:", error);
+      });
+  };
 
   return (
     <DashboardLayout>
@@ -36,10 +46,23 @@ function Tables() {
                 bgColor="info"
                 borderRadius="lg"
                 coloredShadow="info"
+                display="flex"
+                justifyContent="space-between" // Alinear elementos a los extremos
+                alignItems="center" // Centrar verticalmente
               >
                 <MDTypography variant="h6" color="white">
                   Tramites Activos
                 </MDTypography>
+                <Button
+                  variant="contained"
+                  color="white"
+                  size="medium"
+                  startIcon={<SearchIcon />}
+                  onClick={handleDownloadExcel}
+                  sx={{ ml: 2, backgroundColor: "black" }}
+                >
+                  Descargar Excel
+                </Button>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
