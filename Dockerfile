@@ -1,7 +1,7 @@
 FROM node:20-alpine3.16 as dev-deps
 WORKDIR /app
 COPY package.json package.json
-RUN npm install
+RUN npm install --force
 
 FROM node:20-alpine3.16 as builder
 WORKDIR /app
