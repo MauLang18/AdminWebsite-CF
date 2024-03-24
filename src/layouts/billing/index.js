@@ -76,51 +76,43 @@ function Billing() {
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
+                flexWrap="wrap" // Añadir flexWrap para que los elementos se envuelvan en dispositivos móviles
               >
                 <MDTypography variant="h6" color="white">
                   Itinerarios
                 </MDTypography>
-                {/* Mejorando el diseño del combobox, campo de texto y botón */}
-                <Select
-                  value={numFilter}
-                  onChange={handleNumFilterChange}
-                  variant="standard"
-                  size="medium"
-                  sx={{
-                    ml: 2,
-                    minWidth: 120,
-                    backgroundColor: "black",
-                    color: "white",
-                  }}
-                >
-                  <MenuItem value={0}>Todos</MenuItem>
-                  <MenuItem value={1}>Filtrar por POL</MenuItem>
-                  <MenuItem value={2}>Filtrar por POD</MenuItem>
-                </Select>
-                <TextField
-                  label="Buscar"
-                  variant="standard"
-                  size="medium"
-                  value={textFilter}
-                  onChange={handleTextFilterChange}
-                  sx={{
-                    ml: 2,
-                    minWidth: 200,
-                    backgroundColor: "black",
-                    foregroundColor: "black",
-                    color: "white",
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  color="white"
-                  size="medium"
-                  startIcon={<SearchIcon />}
-                  onClick={handleSearch}
-                  sx={{ ml: 2, backgroundColor: "black" }}
-                >
-                  Buscar
-                </Button>
+                {/* Cambiar el diseño del combobox, campo de texto y botón en dispositivos móviles */}
+                <div className="flex flex-wrap justify-center items-center mt-2 w-full">
+                  <Select
+                    value={numFilter}
+                    onChange={handleNumFilterChange}
+                    variant="standard"
+                    size="medium"
+                    className="mb-2 md:mb-0 md:mr-2"
+                  >
+                    <MenuItem value={0}>Todos</MenuItem>
+                    <MenuItem value={1}>Filtrar por POL</MenuItem>
+                    <MenuItem value={2}>Filtrar por POD</MenuItem>
+                  </Select>
+                  <TextField
+                    label="Buscar"
+                    variant="standard"
+                    size="medium"
+                    value={textFilter}
+                    onChange={handleTextFilterChange}
+                    className="mb-2 md:mb-0 md:mr-2"
+                  />
+                  <Button
+                    variant="contained"
+                    color="white"
+                    size="medium"
+                    startIcon={<SearchIcon />}
+                    onClick={handleSearch}
+                    className="md:mt-0"
+                  >
+                    Buscar
+                  </Button>
+                </div>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable

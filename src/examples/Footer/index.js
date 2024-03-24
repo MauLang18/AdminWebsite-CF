@@ -1,5 +1,6 @@
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
 
 // @mui material components
 import Link from "@mui/material/Link";
@@ -15,6 +16,17 @@ import typography from "assets/theme/base/typography";
 function Footer({ company, links }) {
   const { href, name } = company;
   const { size } = typography;
+  const [year, setYear] = useState(new Date().getFullYear());
+
+  useEffect(() => {
+    // Actualizar el año cada vez que cambie
+    const intervalId = setInterval(() => {
+      setYear(new Date().getFullYear());
+    }, 1000 * 60 * 60); // Actualiza cada hora (puedes ajustar el intervalo según tus necesidades)
+
+    // Limpiar el intervalo cuando el componente se desmonte para evitar fugas de memoria
+    return () => clearInterval(intervalId);
+  }, []); // Solo se ejecuta una vez al montar el componente
 
   const renderLinks = () =>
     links.map((link) => (
@@ -45,9 +57,13 @@ function Footer({ company, links }) {
         fontSize={size.sm}
         px={1.5}
       >
-        &copy; {new Date().getFullYear()},{""}
-        <a target="blank" href="https://customcode-2c2f5.web.app/">
-          CustomCodeCR
+        © {year} Grupo Castro Fallas |{" "}
+        <a
+          href="https://customcode-2c2f5.web.app"
+          className="text-blue-500 font-bold hover:text-blue-700"
+          target="blank"
+        >
+          Desarrollado por CustomCodeCR
         </a>
         <MDBox fontSize={size.md} color="text" mb={-0.5} mx={0.25}></MDBox>
       </MDBox>
