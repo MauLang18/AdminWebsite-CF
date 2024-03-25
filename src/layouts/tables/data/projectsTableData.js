@@ -262,7 +262,7 @@ export default function data() {
       ),
       costo: (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {rowData.new_new_facturacompaia}
+          {rowData.new_montocostoestimado}
         </MDTypography>
       ),
       facturasCf: (

@@ -155,59 +155,84 @@ const TrackingForm = () => {
         >
           Buscar
         </Button>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {searchResults.map((result, index) => (
+            <Box key={index} sx={{ display: "grid", gap: 1 }}>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                <Typography variant="h6">IDTRA:</Typography>
+                <Typography variant="h6">BL:</Typography>
+                <Typography variant="h6">#CONTENEDOR:</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                <Typography>{result.title}</Typography>
+                <Typography>{result.new_bcf}</Typography>
+                <Typography>{result.new_contenedor}</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                <Typography variant="h6">PO:</Typography>
+                <Typography variant="h6">#FACTURA:</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                <Typography>{result.new_po}</Typography>
+                <Typography>{result.new_factura}</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                <Typography variant="h6">SHIPPER:</Typography>
+                <Typography variant="h6">STATUS:</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                <Typography>{result._new_shipper_value}</Typography>
+                <Typography>{getStatusName(result.new_preestado2)}</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                <Typography variant="h6">ULTIMO STATUS:</Typography>
+                <Typography variant="h6">FECHA ACTUALIZACION:</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                <Typography>{result.new_statuscliente}</Typography>
+                <Typography>{formatDate(result.modifiedon)}</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 1 }}>
+                <Typography variant="h6">ORIGEN:</Typography>
+                <Typography variant="h6">DESTINO:</Typography>
+                <Typography variant="h6">PESO:</Typography>
+                <Typography variant="h6">TRANSPORTE:</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 1 }}>
+                <Typography>{getOrigenName(result.new_origen)}</Typography>
+                <Typography>{getDestinoName(result.new_destino)}</Typography>
+                <Typography>{result.new_peso}</Typography>
+                <Typography>{getTransporteName(result.new_transporte)}</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                <Typography variant="h6">COMMODITY:</Typography>
+                <Typography variant="h6">CANTIDAD DE BULTOS:</Typography>
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                <Typography>{result.new_commodity}</Typography>
+                <Typography>{result.new_contidadbultos}</Typography>
+              </Box>
 
-        {searchResults.map((result, index) => (
-          <Box key={index} sx={{ marginBottom: 4 }}>
-            <Typography variant="h6">IDTRA:</Typography>
-            <Typography>{result.title}</Typography>
-            <Typography variant="h6">BL:</Typography>
-            <Typography>{result.new_bcf}</Typography>
-            <Typography variant="h6">#CONTENEDOR:</Typography>
-            <Typography>{result.new_contenedor}</Typography>
-            <Typography variant="h6">PO:</Typography>
-            <Typography>{result.new_po}</Typography>
-            <Typography variant="h6">#FACTURA:</Typography>
-            <Typography>{result.new_factura}</Typography>
-            <Typography variant="h6">SHIPPER:</Typography>
-            <Typography>{result._new_shipper_value}</Typography>
-            <Typography variant="h6">STATUS:</Typography>
-            <Typography>{getStatusName(result.new_preestado2)}</Typography>
-            <Typography variant="h6">STATUS CLIENTE:</Typography>
-            <Typography>{result.new_statuscliente}</Typography>
-            <Typography variant="h6">FECHA MODIFICACIÓN:</Typography>
-            <Typography>{formatDate(result.modifiedon)}</Typography>
-            <Typography variant="h6">ORIGEN:</Typography>
-            <Typography>{getOrigenName(result.new_origen)}</Typography>
-            <Typography variant="h6">DESTINO:</Typography>
-            <Typography>{getDestinoName(result.new_destino)}</Typography>
-            <Typography variant="h6">TRANSPORTE:</Typography>
-            <Typography>{getTransporteName(result.new_transporte)}</Typography>
-            <Typography variant="h6">CANTIDAD DE BULTOS:</Typography>
-            <Typography>{result.new_contidadbultos}</Typography>
-            <Typography variant="h6">COMMODITY:</Typography>
-            <Typography>{result.new_commodity}</Typography>
-            <Typography variant="h6">PESO BRUTO:</Typography>
-            <Typography>{result.new_peso}</Typography>
-
-            <Timeline>
-              {timelineData.map((event, index) => (
-                <TimelineItem key={index}>
-                  <TimelineOppositeContent color="textSecondary">
-                    {event.date}
-                  </TimelineOppositeContent>
-                  <TimelineSeparator>
-                    <TimelineDot />
-                    <TimelineConnector />
-                  </TimelineSeparator>
-                  <TimelineContent>
-                    <Typography>{event.label}</Typography>
-                    <Typography>{event.description}</Typography>
-                  </TimelineContent>
-                </TimelineItem>
-              ))}
-            </Timeline>
-          </Box>
-        ))}
+              <Timeline>
+                {timelineData.map((event, index) => (
+                  <TimelineItem key={index}>
+                    <TimelineOppositeContent color="textSecondary">
+                      {event.date}
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                      <TimelineDot />
+                      <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent>
+                      <Typography>{event.label}</Typography>
+                      <Typography>{event.description}</Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+                ))}
+              </Timeline>
+            </Box>
+          ))}
+        </Box>
       </CardContent>
     </Card>
   );

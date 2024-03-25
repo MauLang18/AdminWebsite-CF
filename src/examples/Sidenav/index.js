@@ -22,7 +22,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem("users"));
   const given_name = user ? user.given_name : "";
 
@@ -36,7 +35,19 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
+  // Estado para manejar la apertura de cada dropdown
+  const [dropdownStates, setDropdownStates] = useState({});
+
   useEffect(() => {
+    // Inicializar el estado para cada dropdown basado en las rutas
+    const dropdownInitialStates = {};
+    routes.forEach((route) => {
+      if (route.type === "dropdown") {
+        dropdownInitialStates[route.name] = false;
+      }
+    });
+    setDropdownStates(dropdownInitialStates);
+
     function handleMiniSidenav() {
       setMiniSidenav(dispatch, window.innerWidth < 1200);
       setTransparentSidenav(dispatch, window.innerWidth < 1200 ? false : transparentSidenav);
@@ -47,10 +58,13 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     handleMiniSidenav();
 
     return () => window.removeEventListener("resize", handleMiniSidenav);
-  }, [dispatch, location]);
+  }, [dispatch, location, routes, transparentSidenav, whiteSidenav]);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const toggleDropdown = (dropdownName) => {
+    setDropdownStates((prevState) => ({
+      ...prevState,
+      [dropdownName]: !prevState[dropdownName],
+    }));
   };
 
   const renderRoutes = routes.map(
@@ -63,12 +77,12 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
       if (type === "dropdown") {
         returnValue = (
-          <div key={key} onClick={toggleDropdown}>
+          <div key={key} onClick={() => toggleDropdown(name)}>
             <SidenavCollapse name={name} icon={icon} noCollapse={noCollapse} />
           </div>
         );
 
-        if (isDropdownOpen) {
+        if (dropdownStates[name]) {
           returnValue = (
             <>
               {returnValue}
