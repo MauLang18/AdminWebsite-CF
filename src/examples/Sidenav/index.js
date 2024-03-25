@@ -67,6 +67,13 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     }));
   };
 
+  // Eliminar datos del localStorage cuando la ruta es "/"
+  useEffect(() => {
+    if (location.pathname === "/") {
+      localStorage.clear();
+    }
+  }, [location]);
+
   const renderRoutes = routes.map(
     ({ type, name, icon, title, noCollapse, key, href, route, children, accessibleFor }) => {
       if (accessibleFor && !accessibleFor.includes(given_name)) {
