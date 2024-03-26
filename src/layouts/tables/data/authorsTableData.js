@@ -40,14 +40,32 @@ export default function MyComponent() {
   }, []);
 
   const formatDate = (dateString) => {
-    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-    var formattedDate;
-    if (dateString !== null) {
-      formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
-    } else {
-      formattedDate = "";
+    if (!dateString || dateString.trim() === "") {
+      return "NO DISPONIBLE";
     }
+
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
+
     return formattedDate;
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    if (!dateTimeString || dateTimeString.trim() === "") {
+      return "NO DISPONIBLE";
+    }
+
+    const options = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    };
+    const formattedDateTime = new Date(dateTimeString).toLocaleString("es-ES", options);
+
+    return formattedDateTime;
   };
 
   const getPoeName = (poe) => {

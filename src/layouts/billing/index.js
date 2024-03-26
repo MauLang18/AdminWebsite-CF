@@ -27,8 +27,12 @@ function Billing() {
   const [numFilter, setNumFilter] = useState(0); // Valor inicial del combobox
   const [textFilter, setTextFilter] = useState(""); // Valor inicial del campo de texto
 
+  const [secondSelectOptions, setSecondSelectOptions] = useState([]);
+
   const handleNumFilterChange = (event) => {
     setNumFilter(event.target.value);
+    // Resetear el valor del segundo select al cambiar el filtro
+    setTextFilter("");
   };
 
   const handleTextFilterChange = (event) => {
@@ -57,6 +61,45 @@ function Billing() {
     handleSearch();
   }, []); // Se ejecutará solo una vez al montar el componente
 
+  useEffect(() => {
+    // Definir las opciones para el segundo select según la opción seleccionada en el primero
+    if (numFilter === 1) {
+      // Si se selecciona POL
+      setSecondSelectOptions([
+        "Ningbo, China",
+        "Shanghai, China",
+        "Qingdao, China",
+        "Xiamen, China",
+        "Yantian, China",
+        "Guangzhou, China",
+        "Miami, USA",
+        "SJO, CRC",
+        "PVG, China",
+        "NKG, China",
+        "PEK, China",
+        "CFZ, Panama",
+        "Ciudad Hidalgo, MX",
+        "Ciudad de Guatemala, Guatemala",
+        "Managua, Nicaragua",
+        "San Pedro Sula, Honduras",
+        "San Salvador, El Salvador",
+      ]);
+    } else if (numFilter === 2) {
+      // Si se selecciona POD
+      setSecondSelectOptions([
+        "CFZ, Panama",
+        "SJO, CRC",
+        "Ciudad Guatemala, Guatemala",
+        "San Pedro Sula, Honduras",
+        "San Salvador, El Salvador",
+        "Managua, Nicaragua",
+      ]);
+    } else {
+      // Si se selecciona Todos, reinicia las opciones del segundo select
+      setSecondSelectOptions([]);
+    }
+  }, [numFilter]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -81,38 +124,43 @@ function Billing() {
                 <MDTypography variant="h6" color="white">
                   Itinerarios
                 </MDTypography>
-                {/* Cambiar el diseño del combobox, campo de texto y botón en dispositivos móviles */}
-                <div className="flex flex-wrap justify-center items-center mt-2 w-full">
+                <Select
+                  value={numFilter}
+                  onChange={handleNumFilterChange}
+                  variant="standard"
+                  size="medium"
+                  className="mb-2 md:mb-0 md:mr-2 w-full md:w-auto"
+                >
+                  <MenuItem value={0}>Todos</MenuItem>
+                  <MenuItem value={1}>Filtrar por POL</MenuItem>
+                  <MenuItem value={2}>Filtrar por POD</MenuItem>
+                </Select>
+                {/* Mostrar el segundo select si se selecciona POL o POD */}
+                {numFilter !== 0 && (
                   <Select
-                    value={numFilter}
-                    onChange={handleNumFilterChange}
-                    variant="standard"
-                    size="medium"
-                    className="mb-2 md:mb-0 md:mr-2"
-                  >
-                    <MenuItem value={0}>Todos</MenuItem>
-                    <MenuItem value={1}>Filtrar por POL</MenuItem>
-                    <MenuItem value={2}>Filtrar por POD</MenuItem>
-                  </Select>
-                  <TextField
-                    label="Buscar"
-                    variant="standard"
-                    size="medium"
                     value={textFilter}
                     onChange={handleTextFilterChange}
-                    className="mb-2 md:mb-0 md:mr-2"
-                  />
-                  <Button
-                    variant="contained"
-                    color="white"
+                    variant="standard"
                     size="medium"
-                    startIcon={<SearchIcon />}
-                    onClick={handleSearch}
-                    className="md:mt-0"
+                    className="mb-2 md:mb-0 md:mr-2 w-full md:w-auto"
                   >
-                    Buscar
-                  </Button>
-                </div>
+                    {secondSelectOptions.map((option, index) => (
+                      <MenuItem key={index} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+                <Button
+                  variant="contained"
+                  color="white"
+                  size="medium"
+                  startIcon={<SearchIcon />}
+                  onClick={handleSearch}
+                  className="md:mt-0 w-full md:w-auto"
+                >
+                  Buscar
+                </Button>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable

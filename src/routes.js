@@ -9,7 +9,6 @@ import Notifications from "layouts/notifications";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-import Users from "layouts/users";
 import Tracking from "layouts/tracking";
 
 const routes = [

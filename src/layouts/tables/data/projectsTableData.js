@@ -27,9 +27,15 @@ export default function data() {
     // Llamada a la API al montar el componente
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `https://api.logisticacastrofallas.com/api/TrackingLogin/Finalizado?cliente=${name}`
-        );
+        const response = await Promise.race([
+          axios.get(
+            `https://api.logisticacastrofallas.com/api/TrackingLogin/Finalizado?cliente=${name}`
+          ),
+          new Promise((resolve, reject) => {
+            setTimeout(() => reject(new Error("Timeout exceeded")), 5 * 60 * 1000); // Timeout de 5 minutos
+          }),
+        ]);
+
         setApiData(response.data.data.value);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -40,14 +46,32 @@ export default function data() {
   }, []);
 
   const formatDate = (dateString) => {
-    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-    var formattedDate;
-    if (dateString !== null) {
-      formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
-    } else {
-      formattedDate = "";
+    if (!dateString || dateString.trim() === "") {
+      return "NO DISPONIBLE";
     }
+
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
+
     return formattedDate;
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    if (!dateTimeString || dateTimeString.trim() === "") {
+      return "NO DISPONIBLE";
+    }
+
+    const options = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    };
+    const formattedDateTime = new Date(dateTimeString).toLocaleString("es-ES", options);
+
+    return formattedDateTime;
   };
 
   const getPoeName = (poe) => {

@@ -38,7 +38,9 @@ export default function MyComponent() {
 
   return {
     columns: [
+      { Header: "Origen", accessor: "origen", align: "center" },
       { Header: "POL", accessor: "pol", align: "center" },
+      { Header: "Destino", accessor: "destino", align: "center" },
       { Header: "POD", accessor: "pod", align: "center" },
       { Header: "Closing", accessor: "closing", align: "center" },
       { Header: "ETD", accessor: "etd", align: "center" },
@@ -46,14 +48,18 @@ export default function MyComponent() {
       { Header: "Carrier", accessor: "carrier", align: "center" },
       { Header: "Vessel", accessor: "vessel", align: "center" },
       { Header: "Voyage", accessor: "voyage", align: "center" },
+      { Header: "Transporte", accessor: "transporte", align: "center" },
+      { Header: "Modalidad", accessor: "modalidad", align: "center" },
     ],
 
     rows: apiData.map((rowData) => ({
+      origen: <img src={rowData.origen} alt="origen" />,
       pol: (
         <MDTypography variant="caption" color="text" fontWeight="medium">
           {rowData.pol}
         </MDTypography>
       ),
+      destino: <img src={rowData.destino} alt="destino" />,
       pod: (
         <MDTypography variant="caption" color="text" fontWeight="medium">
           {rowData.pod}
@@ -87,6 +93,16 @@ export default function MyComponent() {
       voyage: (
         <MDTypography variant="caption" color="text" fontWeight="medium">
           {rowData.voyage}
+        </MDTypography>
+      ),
+      transporte: (
+        <MDTypography variant="caption" color="text" fontWeight="medium">
+          {rowData.transporte}
+        </MDTypography>
+      ),
+      modalidad: (
+        <MDTypography variant="caption" color="text" fontWeight="medium">
+          {rowData.modalidad}
         </MDTypography>
       ),
     })),

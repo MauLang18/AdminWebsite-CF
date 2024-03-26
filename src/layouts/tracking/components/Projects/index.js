@@ -69,8 +69,13 @@ const TrackingForm = () => {
           description: `POE: ${getPoeName(result.new_poe) || ""}`,
         },
         {
+          date: "ETA DESTINO",
+          label: `ETA: ${formatDate(result.new_etadestino) || ""}`,
+          description: `POD: ${getDestinoName(result.new_destino) || ""}`,
+        },
+        {
           date: "Confirmacion de Arribo",
-          label: `ENTREGA: ${formatDate(result.new_eta) || ""}`,
+          label: `OFICIALIZACION: ${formatDateTime(result.new_fechayhoraoficializacion) || ""}`,
         },
         {
           date: "ENTREGA",
@@ -89,9 +94,32 @@ const TrackingForm = () => {
   };
 
   const formatDate = (dateString) => {
+    if (!dateString || dateString.trim() === "") {
+      return "NO DISPONIBLE";
+    }
+
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
     const formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
+
     return formattedDate;
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    if (!dateTimeString || dateTimeString.trim() === "") {
+      return "NO DISPONIBLE";
+    }
+
+    const options = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    };
+    const formattedDateTime = new Date(dateTimeString).toLocaleString("es-ES", options);
+
+    return formattedDateTime;
   };
 
   const getPoeName = (poe) => {

@@ -70,6 +70,7 @@ function Basic() {
   return (
     <BasicLayout image={bgImage}>
       <Card>
+        <img src="logo.png" alt="Imagen de inicio de sesión" />
         <MDBox
           variant="gradient"
           bgColor="info"

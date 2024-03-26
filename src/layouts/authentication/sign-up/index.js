@@ -27,6 +27,10 @@ function Cover() {
     const apellido = data.get("lastName");
     const email = data.get("email");
     const password = data.get("password");
+    const nombreEmpresa = data.get("nombreEmpresa");
+    const telefono = data.get("telefono");
+    const direccion = data.get("direccion");
+    const pais = data.get("pais");
 
     try {
       const response = await axios.post(
@@ -38,8 +42,13 @@ function Cover() {
           correo: email,
           tipo: "Interno",
           cliente: null,
-          idRol: 2,
-          estado: 1,
+          nombreEmpresa,
+          telefono,
+          direccion,
+          pais,
+          paginas: "",
+          idRol: 3,
+          estado: 0,
         }
       );
 
@@ -73,18 +82,42 @@ function Cover() {
             Introduzca su correo electrónico y contraseña para registrarse
           </MDTypography>
         </MDBox>
-        <MDBox pt={4} pb={3} px={3}>
+        <MDBox pt={1} pb={1} px={3}>
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
-            <MDBox mb={2}>
+            <MDBox mb={1}>
               <MDInput type="text" label="Nombre" name="firstName" variant="standard" fullWidth />
             </MDBox>
-            <MDBox mb={2}>
+            <MDBox mb={1}>
               <MDInput type="text" label="Apellido" name="lastName" variant="standard" fullWidth />
             </MDBox>
-            <MDBox mb={2}>
+            <MDBox mb={1}>
+              <MDInput
+                type="text"
+                label="Nombre de Empresa"
+                name="nombreEmpresa"
+                variant="standard"
+                fullWidth
+              />
+            </MDBox>
+            <MDBox mb={1}>
+              <MDInput type="text" label="Telefono" name="telefono" variant="standard" fullWidth />
+            </MDBox>
+            <MDBox mb={1}>
+              <MDInput
+                type="text"
+                label="Dirección"
+                name="direccion"
+                variant="standard"
+                fullWidth
+              />
+            </MDBox>
+            <MDBox mb={1}>
+              <MDInput type="text" label="País" name="pais" variant="standard" fullWidth />
+            </MDBox>
+            <MDBox mb={1}>
               <MDInput type="email" label="Correo" name="email" variant="standard" fullWidth />
             </MDBox>
-            <MDBox mb={2}>
+            <MDBox mb={1}>
               <MDInput
                 type="password"
                 label="Contraseña"

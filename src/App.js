@@ -72,7 +72,8 @@ export default function App() {
     const user = JSON.parse(localStorage.getItem("users"));
 
     if (user) {
-      const given_name = user ? user.given_name : "";
+      const typ = user.typ;
+      const userPermissions = typ ? typ.split(",").map(Number) : [];
 
       return allRoutes
         .map((route) => {
@@ -80,7 +81,7 @@ export default function App() {
             const filteredRoutes = getRoutesForUser(route.collapse);
             return filteredRoutes.some((r) => r) ? { ...route, collapse: filteredRoutes } : null;
           }
-          if (route.route && route.accessibleFor.includes(given_name)) {
+          if (route.route && userPermissions.includes(Number(route.key))) {
             return <Route exact path={route.route} element={route.component} key={route.key} />;
           }
           return null;
