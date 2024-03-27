@@ -93,9 +93,9 @@ const ContactoFormulario = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        to: "pricing@grupocastrofallas.com",
-        subject: "Cotización",
-        body: emailBody,
+        para: "pricing@grupocastrofallas.com",
+        asunto: "Cotización",
+        contenido: emailBody,
       }),
     })
       .then((response) => {
