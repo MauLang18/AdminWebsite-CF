@@ -67,13 +67,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     }));
   };
 
-  // Eliminar datos del localStorage cuando la ruta es "/"
-  useEffect(() => {
-    if (location.pathname === "/") {
-      localStorage.clear();
-    }
-  }, [location]);
-
   const renderRoutes = routes.map(
     ({ type, name, icon, title, noCollapse, key, href, route, children, accessibleFor }) => {
       if (accessibleFor && !accessibleFor.includes(given_name)) {
@@ -180,7 +173,12 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </MDTypography>
         </MDBox>
-        <MDBox component={NavLink} to="/" display="flex" alignItems="center">
+        <MDBox
+          component={NavLink}
+          to="https://logisticacastrofallas.com"
+          display="flex"
+          alignItems="center"
+        >
           {brand && <MDBox component="img" src={"logoblanco.png"} alt="Brand" width="2rem" />}
           <MDBox
             width={!brandName && "100%"}

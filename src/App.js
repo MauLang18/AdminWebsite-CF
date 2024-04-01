@@ -81,7 +81,11 @@ export default function App() {
             const filteredRoutes = getRoutesForUser(route.collapse);
             return filteredRoutes.some((r) => r) ? { ...route, collapse: filteredRoutes } : null;
           }
-          if (route.route && userPermissions.includes(Number(route.key))) {
+          if (
+            route.route &&
+            !["login", "register"].includes(route.key) &&
+            userPermissions.includes(Number(route.key))
+          ) {
             return <Route exact path={route.route} element={route.component} key={route.key} />;
           }
           return null;

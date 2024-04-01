@@ -173,9 +173,9 @@ function WHS(props) {
   const handleDownloadExcel = () => {
     let url;
     if (numFilter === 0 && textFilter === "") {
-      url = `https://api.logisticacastrofallas.com/api/Whs?whs=${pol}&cliente=${name}&Download=True`;
+      url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}&Download=True`;
     } else {
-      url = `https://api.logisticacastrofallas.com/api/Whs?whs=${pol}&cliente=${name}&NumFilter=1&TextFilter=${textFilter}&Download=True`;
+      url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}&NumFilter=1&TextFilter=${textFilter}&Download=True`;
     }
 
     axios
