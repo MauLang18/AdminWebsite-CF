@@ -50,7 +50,62 @@ function Billing() {
         );
       }
 
-      setRows(response.data.data);
+      const newRows = response.data.data.map((rowData) => ({
+        origen: <img src={rowData.origen} alt="origen" />,
+        pol: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {rowData.pol}
+          </MDTypography>
+        ),
+        destino: <img src={rowData.destino} alt="destino" />,
+        pod: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {rowData.pod}
+          </MDTypography>
+        ),
+        closing: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {formatDate(rowData.closing)}
+          </MDTypography>
+        ),
+        etd: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {formatDate(rowData.etd)}
+          </MDTypography>
+        ),
+        eta: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {formatDate(rowData.eta)}
+          </MDTypography>
+        ),
+        carrier: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {rowData.carrier}
+          </MDTypography>
+        ),
+        vessel: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {rowData.vessel}
+          </MDTypography>
+        ),
+        voyage: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {rowData.voyage}
+          </MDTypography>
+        ),
+        transporte: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {rowData.transporte}
+          </MDTypography>
+        ),
+        modalidad: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {rowData.modalidad}
+          </MDTypography>
+        ),
+      }));
+
+      setRows(newRows);
     } catch (error) {
       console.error("Error fetching data:", error);
     }

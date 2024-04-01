@@ -10,6 +10,7 @@ import Notifications from "layouts/notifications";
 // @mui icons
 import Icon from "@mui/material/Icon";
 import Tracking from "layouts/tracking";
+import WHS from "layouts/whs";
 
 const routes = [
   {
@@ -109,18 +110,67 @@ const routes = [
     component: <Notifications />,
   },
   {
-    type: "collapse",
+    type: "dropdown",
     name: "WHS",
     key: "13",
-    icon: <Icon fontSize="small">warehouse</Icon>,
-    route: "/whs",
     accessibleFor: ["2"],
-    component: <Notifications />,
+    icon: <Icon fontSize="small">warehouse</Icon>,
+    children: [
+      {
+        name: "Miami, USA",
+        key: "14",
+        route: "/miami",
+        accessibleFor: ["2"],
+        component: <WHS pol={"Miami, USA"} />,
+      },
+      {
+        name: "CFZ, Panama",
+        key: "15",
+        route: "/panama",
+        accessibleFor: ["2"],
+        component: <WHS pol={"CFZ, Panama"} />,
+      },
+      {
+        name: "SJO, CRC",
+        key: "16",
+        route: "/sanjose",
+        accessibleFor: ["2"],
+        component: <WHS pol={"SJO, CRC"} />,
+      },
+      {
+        name: "Ningbo, China",
+        key: "17",
+        route: "/ningbo",
+        accessibleFor: ["2"],
+        component: <WHS pol={"Ningbo, China"} />,
+      },
+      {
+        name: "Shanghai, China",
+        key: "18",
+        route: "/shanghai",
+        accessibleFor: ["2"],
+        component: <WHS pol={"Shanghai, China"} />,
+      },
+      {
+        name: "Ciudad Guatemala, Guatemala",
+        key: "19",
+        route: "/guatemala",
+        accessibleFor: ["2"],
+        component: <WHS pol={"Ciudad Guatemala, Guatemala"} />,
+      },
+      {
+        name: "San Pedro Sula, Honduras",
+        key: "20",
+        route: "/honduras",
+        accessibleFor: ["2"],
+        component: <WHS pol={"San Pedro Sula, Honduras"} />,
+      },
+    ],
   },
   {
     type: "collapse",
     name: "My Finance",
-    key: "14",
+    key: "21",
     icon: <Icon fontSize="small">monetization_on</Icon>,
     route: "/finance",
     accessibleFor: ["2"],
@@ -129,7 +179,7 @@ const routes = [
   {
     type: "collapse",
     name: "Directorio Interno",
-    key: "15",
+    key: "22",
     icon: <Icon fontSize="small">store_mall_directory</Icon>,
     route: "/directorio",
     accessibleFor: ["2"],
@@ -182,6 +232,48 @@ const routes = [
     route: "/tarifarios",
     accessibleFor: ["2"],
     component: <Notifications />,
+  },
+  {
+    key: "14",
+    route: "/miami",
+    accessibleFor: ["2"],
+    component: <WHS pol={"Miami, USA"} />,
+  },
+  {
+    key: "15",
+    route: "/panama",
+    accessibleFor: ["2"],
+    component: <WHS pol={"CFZ, Panama"} />,
+  },
+  {
+    key: "16",
+    route: "/sanjose",
+    accessibleFor: ["2"],
+    component: <WHS pol={"SJO, CRC"} />,
+  },
+  {
+    key: "17",
+    route: "/ningbo",
+    accessibleFor: ["2"],
+    component: <WHS pol={"Ningbo, China"} />,
+  },
+  {
+    key: "18",
+    route: "/shanghai",
+    accessibleFor: ["2"],
+    component: <WHS pol={"Shanghai, China"} />,
+  },
+  {
+    key: "19",
+    route: "/guatemala",
+    accessibleFor: ["2"],
+    component: <WHS pol={"Ciudad Guatemala, Guatemala"} />,
+  },
+  {
+    key: "20",
+    route: "/honduras",
+    accessibleFor: ["2"],
+    component: <WHS pol={"San Pedro Sula, Honduras"} />,
   },
 ];
 

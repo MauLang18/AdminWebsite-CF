@@ -59,7 +59,7 @@ function Footer({ company, links }) {
       >
         © {year} Grupo Castro Fallas |{" "}
         <a
-          href="https://customcode-2c2f5.web.app"
+          href="https://customcodecr.com"
           className="text-blue-500 font-bold hover:text-blue-700"
           target="blank"
         >
