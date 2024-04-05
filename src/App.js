@@ -68,6 +68,8 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
+  const redirectTo = localStorage.getItem("users") ? "/perfil" : "/";
+
   const getRoutesForUser = (allRoutes) => {
     const user = JSON.parse(localStorage.getItem("users"));
 
@@ -152,7 +154,7 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutesForUser(routes)}
-          <Route path="*" element={<Navigate to="/perfil" />} />
+          <Route path="*" element={<Navigate to={redirectTo} />} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
@@ -176,7 +178,7 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutesForUser(routes)}
-        <Route path="*" element={<Navigate to="/perfil" />} />
+        <Route path="*" element={<Navigate to={redirectTo} />} />
       </Routes>
     </ThemeProvider>
   );

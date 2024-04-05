@@ -75,9 +75,9 @@ function WHS(props) {
     try {
       let url;
       if (numFilter === 0 && textFilter === "") {
-        url = `https://api.logisticacastrofallas.com/api/Whs?whs=${pol}&cliente=${name}`;
+        url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}`;
       } else {
-        url = `https://api.logisticacastrofallas.com/api/Whs?whs=${pol}&cliente=${name}&NumFilter=1&TextFilter=${textFilter}`;
+        url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}&NumFilter=1&TextFilter=${textFilter}`;
       }
 
       const response = await axios.get(url);
@@ -85,6 +85,16 @@ function WHS(props) {
         idtra: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             {rowData.idtra}
+          </MDTypography>
+        ),
+        numeroWHS: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {rowData.numeroWHS}
+          </MDTypography>
+        ),
+        nombreCliente: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            {rowData.nombreCliente}
           </MDTypography>
         ),
         tipoRegistro: (
@@ -237,19 +247,30 @@ function WHS(props) {
                   />
                   {pol}
                 </MDTypography>
-                <Select
-                  value={textFilter}
-                  onChange={handleTextFilterChange}
-                  variant="standard"
-                  size="medium"
-                  className="mb-2 md:mb-0 md:mr-2 w-full md:w-auto"
-                >
-                  <MenuItem value={""}>Todos</MenuItem>
-                  <MenuItem value={"En WHS"}>En WHS</MenuItem>
-                  <MenuItem value={"Preparando para Envio"}>Preparando para Envio</MenuItem>
-                  <MenuItem value={"En transito"}>En transito</MenuItem>
-                  <MenuItem value={"Salida"}>Salida</MenuItem>
-                </Select>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <MDTypography variant="h6" color="white" style={{ marginRight: "10px" }}>
+                    FILTRO:
+                  </MDTypography>
+                  <Select
+                    value={textFilter}
+                    onChange={handleTextFilterChange}
+                    variant="standard"
+                    size="medium"
+                    className="mb-2 md:mb-0 md:mr-2 w-full md:w-auto"
+                    style={{ color: "white" }}
+                    displayEmpty
+                    inputProps={{ "aria-label": "FILTRO" }}
+                  >
+                    <MenuItem value="" disabled>
+                      FILTRO
+                    </MenuItem>
+                    <MenuItem value={""}>Todos</MenuItem>
+                    <MenuItem value={"En WHS"}>En WHS</MenuItem>
+                    <MenuItem value={"Preparando para Envio"}>Preparando para Envio</MenuItem>
+                    <MenuItem value={"Salida"}>Salida</MenuItem>
+                  </Select>
+                </div>
+
                 <Button
                   variant="contained"
                   color="white"

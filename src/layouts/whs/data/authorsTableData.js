@@ -43,25 +43,37 @@ export default function MyComponent(pol) {
   return {
     columns: [
       { Header: "ID INTERNO", accessor: "idtra", align: "center" },
+      { Header: "# WHS", accessor: "numeroWHS", align: "center" },
+      { Header: "CLIENTE", accessor: "nombreCliente", align: "center" },
       { Header: "TIPO REGISTRO", accessor: "tipoRegistro", align: "center" },
       { Header: "FECHA REGISTRO", accessor: "fechaCreacionAuditoria", align: "center" },
       { Header: "PO", accessor: "po", align: "center" },
       { Header: "STATUS", accessor: "statusWHS", align: "center" },
       { Header: "POL", accessor: "pol", align: "center" },
       { Header: "POD", accessor: "pod", align: "center" },
-      { Header: "DETALLE", accessor: "detalle", align: "center" },
       { Header: "CANT. BULTOS", accessor: "cantidadBultos", align: "center" },
       { Header: "TIPO BULTOS", accessor: "tipoBultos", align: "center" },
       { Header: "VINCULADO", accessor: "vinculacionOtroRegistro", align: "center" },
       { Header: "WHS Receipt", accessor: "whsReceipt", align: "center" },
       { Header: "Documentación Registro", accessor: "documentoregistro", align: "center" },
       { Header: "IMAGENES", accessor: "imagen", align: "center" },
+      { Header: "DETALLE", accessor: "detalle", align: "center" },
     ],
 
     rows: apiData.map((rowData) => ({
       idtra: (
         <MDTypography variant="caption" color="text" fontWeight="medium">
           {rowData.idtra}
+        </MDTypography>
+      ),
+      numeroWHS: (
+        <MDTypography variant="caption" color="text" fontWeight="medium">
+          {rowData.numeroWHS}
+        </MDTypography>
+      ),
+      nombreCliente: (
+        <MDTypography variant="caption" color="text" fontWeight="medium">
+          {rowData.nombreCliente}
         </MDTypography>
       ),
       tipoRegistro: (

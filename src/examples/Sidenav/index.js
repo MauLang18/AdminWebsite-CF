@@ -35,6 +35,18 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
+  const clearLocalStorage = () => {
+    localStorage.removeItem("users");
+  };
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", clearLocalStorage);
+
+    return () => {
+      window.removeEventListener("beforeunload", clearLocalStorage);
+    };
+  }, []);
+
   // Estado para manejar la apertura de cada dropdown
   const [dropdownStates, setDropdownStates] = useState({});
 
@@ -175,9 +187,10 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         </MDBox>
         <MDBox
           component={NavLink}
-          to="https://logisticacastrofallas.com"
+          to="/"
           display="flex"
           alignItems="center"
+          onClick={clearLocalStorage}
         >
           {brand && <MDBox component="img" src={"logoblanco.png"} alt="Brand" width="2rem" />}
           <MDBox
