@@ -22,7 +22,10 @@ import bgImage from "assets/images/bg-sign-in-basic.jpg";
 function Cover() {
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log("hola");
     const data = new FormData(event.currentTarget);
+
+    // Obtener los datos del formulario
     const nombre = data.get("firstName");
     const apellido = data.get("lastName");
     const email = data.get("email");
@@ -32,32 +35,29 @@ function Cover() {
     const direccion = data.get("direccion");
     const pais = data.get("pais");
 
+    // Agregar los campos adicionales requeridos que no están en el formulario
+    data.append("nombre", nombre);
+    data.append("apellido", apellido);
+    data.append("pass", password);
+    data.append("correo", email);
+    data.append("nombreEmpresa", nombreEmpresa);
+    data.append("telefono", telefono);
+    data.append("direccion", direccion);
+    data.append("pais", pais);
+    data.append("tipo", "Interno");
+    data.append("paginas", "1");
+    data.append("idRol", "2");
+    data.append("estado", "0");
+
     try {
       const response = await axios.post(
-        "https://api.logisticacastrofallas.com/api/Usuario/Register",
-        {
-          nombre,
-          apellido,
-          pass: password,
-          correo: email,
-          tipo: "Interno",
-          cliente: null,
-          nombreEmpresa,
-          telefono,
-          direccion,
-          pais,
-          paginas: "",
-          idRol: 3,
-          estado: 0,
-        }
+        "https://api.logisticacastrofallas.com/api/Usuario/Register/",
+        data
       );
 
       console.log(response.data);
-      // Puedes manejar la respuesta aquí según tus necesidades.
-      // Por ejemplo, podrías redirigir al usuario a la página de inicio de sesión.
     } catch (error) {
       console.error(error);
-      // También puedes manejar el error y proporcionar feedback al usuario si es necesario.
     }
   };
 
@@ -127,7 +127,7 @@ function Cover() {
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton type="submit" variant="gradient" color="info" fullWidth>
                 Registrarse
               </MDButton>
             </MDBox>

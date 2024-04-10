@@ -20,6 +20,7 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import authorsTableData from "layouts/billing/data/authorsTableData";
 import axios from "axios";
+import Avatars from "../billing/data/Avatars";
 
 function Billing() {
   const { columns } = authorsTableData();
@@ -31,7 +32,6 @@ function Billing() {
 
   const handleNumFilterChange = (event) => {
     setNumFilter(event.target.value);
-    // Resetear el valor del segundo select al cambiar el filtro
     setTextFilter("");
   };
 
@@ -39,25 +39,43 @@ function Billing() {
     setTextFilter(event.target.value);
   };
 
+  const formatDate = (dateString) => {
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    var formattedDate;
+    if (dateString !== null) {
+      formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
+    } else {
+      formattedDate = "";
+    }
+    return formattedDate;
+  };
+
   const handleSearch = async () => {
     try {
-      var response;
+      let url;
       if (numFilter === 0 && textFilter === "") {
-        response = await axios.get(`https://api.logisticacastrofallas.com/api/Itinerario`);
+        url = `https://api.logisticacastrofallas.com/api/Itinerario`;
       } else {
-        response = await axios.get(
-          `https://api.logisticacastrofallas.com/api/Itinerario?NumFilter=${numFilter}&TextFilter=${textFilter}`
-        );
+        url = `https://api.logisticacastrofallas.com/api/Itinerario?NumFilter=${numFilter}&TextFilter=${textFilter}`;
       }
 
+      const response = await axios.get(url);
       const newRows = response.data.data.map((rowData) => ({
-        origen: <img src={rowData.origen} alt="origen" />,
+        origen: (
+          <Avatars
+            members={[rowData.origen].map((image, index) => [image, `Image ${index + 1}`])}
+          />
+        ),
         pol: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             {rowData.pol}
           </MDTypography>
         ),
-        destino: <img src={rowData.destino} alt="destino" />,
+        destino: (
+          <Avatars
+            members={[rowData.destino].map((image, index) => [image, `Image ${index + 1}`])}
+          />
+        ),
         pod: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             {rowData.pod}
@@ -112,9 +130,8 @@ function Billing() {
   };
 
   useEffect(() => {
-    // Realizar la solicitud inicial al cargar el componente
     handleSearch();
-  }, []); // Se ejecutará solo una vez al montar el componente
+  }, [textFilter]);
 
   useEffect(() => {
     // Definir las opciones para el segundo select según la opción seleccionada en el primero
@@ -149,6 +166,12 @@ function Billing() {
         "San Salvador, El Salvador",
         "Managua, Nicaragua",
       ]);
+    } else if (numFilter === 3) {
+      // Si se selecciona POD
+      setSecondSelectOptions(["Aereo", "Maritimo", "Terrestre"]);
+    } else if (numFilter === 4) {
+      // Si se selecciona POD
+      setSecondSelectOptions(["LCL", "LTL", "FCL", "FTL", "Multimodal"]);
     } else {
       // Si se selecciona Todos, reinicia las opciones del segundo select
       setSecondSelectOptions([]);
@@ -189,6 +212,8 @@ function Billing() {
                   <MenuItem value={0}>Todos</MenuItem>
                   <MenuItem value={1}>Filtrar por POL</MenuItem>
                   <MenuItem value={2}>Filtrar por POD</MenuItem>
+                  <MenuItem value={3}>Filtrar por Transporte</MenuItem>
+                  <MenuItem value={4}>Filtrar por Modalidad</MenuItem>
                 </Select>
                 {/* Mostrar el segundo select si se selecciona POL o POD */}
                 {numFilter !== 0 && (

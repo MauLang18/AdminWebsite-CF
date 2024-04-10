@@ -11,6 +11,8 @@ import Notifications from "layouts/notifications";
 import Icon from "@mui/material/Icon";
 import Tracking from "layouts/tracking";
 import WHS from "layouts/whs";
+import Exoneracion from "layouts/exoneracion";
+import Finance from "layouts/finance";
 
 const routes = [
   {
@@ -107,7 +109,7 @@ const routes = [
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/exoneraciones",
     accessibleFor: ["2"],
-    component: <Notifications />,
+    component: <Exoneracion />,
   },
   {
     type: "dropdown",
@@ -174,7 +176,7 @@ const routes = [
     icon: <Icon fontSize="small">monetization_on</Icon>,
     route: "/finance",
     accessibleFor: ["2"],
-    component: <Notifications />,
+    component: <Finance />,
   },
   {
     type: "collapse",

@@ -18,32 +18,14 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "layouts/whs/data/authorsTableData";
+import authorsTableData from "layouts/exoneracion/data/authorsTableData";
 import axios from "axios";
-import Avatars from "../whs/data/Avatars";
 
-import usa from "layouts/whs/data/img/usa.png";
-import panama from "layouts/whs/data/img/panama.png";
-import crc from "layouts/whs/data/img/crc.png";
-import china from "layouts/whs/data/img/china.png";
-import guatemala from "layouts/whs/data/img/guatemala.png";
-import honduras from "layouts/whs/data/img/honduras.png";
-
-function WHS(props) {
-  const { pol } = props;
-  const { columns } = authorsTableData(pol);
+function Exoneracion() {
+  const { columns } = authorsTableData();
   const [rows, setRows] = useState([]);
   const [numFilter, setNumFilter] = useState(0); // Valor inicial del combobox
   const [textFilter, setTextFilter] = useState(""); // Valor inicial del campo de texto
-  const country = pol.split(", ")[1].toLowerCase();
-  const countryFlags = {
-    usa,
-    panama,
-    crc,
-    china,
-    guatemala,
-    honduras,
-  };
   const user = JSON.parse(localStorage.getItem("users"));
   const { name } = user;
 
@@ -69,26 +51,38 @@ function WHS(props) {
     return formattedDateTime;
   };
 
+  const toggleDescription = () => {
+    setShowFullDescription(!showFullDescription);
+  };
+
+  const getDescriptionContent = (rowData) => {
+    if (showFullDescription) {
+      return rowData.descripcion;
+    } else {
+      const firstWords = rowData.descripcion.split(" ").slice(0, 10).join(" ");
+      return (
+        <div>
+          {firstWords}
+          <button onClick={toggleDescription}>Ver más</button>
+        </div>
+      );
+    }
+  };
+
   const handleSearch = async () => {
     try {
       let url;
       if (numFilter === 0 && textFilter === "") {
-        url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}`;
+        url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}`;
       } else {
-        url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}&NumFilter=1&TextFilter=${textFilter}`;
+        url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&NumFilter=1&TextFilter=${textFilter}`;
       }
 
       const response = await axios.get(url);
-      console.log(response.data.data);
       const newRows = response.data.data.map((rowData) => ({
         idtra: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             {rowData.idtra}
-          </MDTypography>
-        ),
-        numeroWHS: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.numeroWHS}
           </MDTypography>
         ),
         nombreCliente: (
@@ -96,80 +90,65 @@ function WHS(props) {
             {rowData.nombreCliente}
           </MDTypography>
         ),
-        tipoRegistro: (
+        tipoExoneracion: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.tipoRegistro}
+            {rowData.tipoExoneracion}
           </MDTypography>
         ),
-        fechaCreacionAuditoria: (
+        statusExoneracion: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {formatDateTime(rowData.fechaCreacionAuditoria)}
+            {rowData.statusExoneracion}
           </MDTypography>
         ),
-        po: (
+        producto: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.po}
+            {rowData.producto}
           </MDTypography>
         ),
-        statusWHS: (
+        categoria: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.statusWHS}
+            {rowData.categoria}
           </MDTypography>
         ),
-        pol: (
+        clasificacionArancelaria: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.pol}
+            {rowData.clasificacionArancelaria}
           </MDTypography>
         ),
-        pod: (
+        numeroSolicitud: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.pod}
+            {rowData.numeroSolicitud}
           </MDTypography>
         ),
-        detalle: (
+        solicitud: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.detalle}
+            <a href={rowData.solicitud}>SOLICITUD</a>
           </MDTypography>
         ),
-        cantidadBultos: (
+        numeroAutorizacion: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.cantidadBultos}
+            {rowData.numeroAutorizacion}
           </MDTypography>
         ),
-        tipoBultos: (
+        autorizacion: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.tipoBultos}
+            <a href={rowData.autorizacion}>AUTORIZACION</a>
           </MDTypography>
         ),
-        vinculacionOtroRegistro: (
+        desde: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.vinculacionOtroRegistro}
+            {formatDate(rowData.desde)}
           </MDTypography>
         ),
-        whsReceipt: (
+        hasta: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            <a target="blank" href={rowData.whsReceipt}>
-              WHS Receipt
-            </a>
+            {formatDate(rowData.hasta)}
           </MDTypography>
         ),
-        documentoregistro: (
+        descripcion: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            <a target="blank" href={rowData.documentoregistro}>
-              Documentación Registro
-            </a>
+            {getDescriptionContent(rowData)}
           </MDTypography>
-        ),
-        imagen: (
-          <Avatars
-            members={[
-              rowData.imagen1,
-              rowData.imagen2,
-              rowData.imagen3,
-              rowData.imagen4,
-              rowData.imagen5,
-            ].map((image, index) => [image, `Image ${index + 1}`])}
-          />
         ),
       }));
 
@@ -182,9 +161,9 @@ function WHS(props) {
   const handleDownloadExcel = () => {
     let url;
     if (numFilter === 0 && textFilter === "") {
-      url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}&Download=True`;
+      url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&Download=True`;
     } else {
-      url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}&NumFilter=1&TextFilter=${textFilter}&Download=True`;
+      url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&NumFilter=1&TextFilter=${textFilter}&Download=True`;
     }
 
     axios
@@ -214,7 +193,7 @@ function WHS(props) {
 
   useEffect(() => {
     handleSearch();
-  }, [pol, textFilter]);
+  }, [textFilter]);
 
   return (
     <DashboardLayout>
@@ -237,14 +216,6 @@ function WHS(props) {
                 justifyContent="space-between"
                 flexWrap="wrap" // Añadir flexWrap para que los elementos se envuelvan en dispositivos móviles
               >
-                <MDTypography variant="h6" color="white">
-                  <img
-                    src={countryFlags[pol.split(", ")[1].toLowerCase()]}
-                    alt={`${country} flag`}
-                    style={{ width: "30px", height: "auto", marginRight: "10px" }}
-                  />
-                  {pol}
-                </MDTypography>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MDTypography variant="h6" color="white" style={{ marginRight: "10px" }}>
                     FILTRO:
@@ -263,13 +234,13 @@ function WHS(props) {
                       FILTRO
                     </MenuItem>
                     <MenuItem value={""}>Todos</MenuItem>
-                    <MenuItem value={"En WHS"}>En WHS</MenuItem>
-                    <MenuItem value={"Preparando para Envio"}>Preparando para Envio</MenuItem>
-                    <MenuItem value={"Salida"}>Salida</MenuItem>
+                    <MenuItem value={"En Tramite"}>En Tramite</MenuItem>
+                    <MenuItem value={"Autorizada"}>Autorizada</MenuItem>
+                    <MenuItem value={"Vencida"}>Vencida</MenuItem>
                   </Select>
                 </div>
 
-                <Button
+                {/* <Button
                   variant="contained"
                   color="white"
                   size="medium"
@@ -278,7 +249,7 @@ function WHS(props) {
                   sx={{ ml: 2, backgroundColor: "black" }}
                 >
                   Descargar Excel
-                </Button>
+                </Button> */}
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
@@ -298,8 +269,4 @@ function WHS(props) {
   );
 }
 
-WHS.propTypes = {
-  pol: PropTypes.string.isRequired,
-};
-
-export default WHS;
+export default Exoneracion;
