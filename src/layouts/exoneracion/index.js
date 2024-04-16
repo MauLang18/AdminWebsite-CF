@@ -3,7 +3,6 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/CloudDownloadTwoTone";
 
@@ -24,8 +23,7 @@ import axios from "axios";
 function Exoneracion() {
   const { columns } = authorsTableData();
   const [rows, setRows] = useState([]);
-  const [numFilter, setNumFilter] = useState(0); // Valor inicial del combobox
-  const [textFilter, setTextFilter] = useState(""); // Valor inicial del campo de texto
+  const [textFilter, setTextFilter] = useState("");
   const user = JSON.parse(localStorage.getItem("users"));
   const { name } = user;
 
@@ -33,123 +31,43 @@ function Exoneracion() {
     setTextFilter(event.target.value);
   };
 
-  const formatDateTime = (dateTimeString) => {
-    if (!dateTimeString || dateTimeString.trim() === "") {
-      return "NO DISPONIBLE";
-    }
-
-    const options = {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    };
-    const formattedDateTime = new Date(dateTimeString).toLocaleString("es-ES", options);
-
-    return formattedDateTime;
-  };
-
-  const toggleDescription = () => {
-    setShowFullDescription(!showFullDescription);
-  };
-
-  const getDescriptionContent = (rowData) => {
-    if (showFullDescription) {
-      return rowData.descripcion;
+  const formatDate = (dateString) => {
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    var formattedDate;
+    if (dateString !== null) {
+      formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
     } else {
-      const firstWords = rowData.descripcion.split(" ").slice(0, 10).join(" ");
-      return (
-        <div>
-          {firstWords}
-          <button onClick={toggleDescription}>Ver más</button>
-        </div>
-      );
+      formattedDate = "";
     }
+    return formattedDate;
   };
 
   const handleSearch = async () => {
     try {
       let url;
-      if (numFilter === 0 && textFilter === "") {
+      if (textFilter === "") {
         url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}`;
       } else {
-        url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&NumFilter=1&TextFilter=${textFilter}`;
+        url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&TextFilter=${textFilter}`;
       }
 
       const response = await axios.get(url);
       const newRows = response.data.data.map((rowData) => ({
-        idtra: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.idtra}
-          </MDTypography>
-        ),
-        nombreCliente: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.nombreCliente}
-          </MDTypography>
-        ),
-        tipoExoneracion: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.tipoExoneracion}
-          </MDTypography>
-        ),
-        statusExoneracion: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.statusExoneracion}
-          </MDTypography>
-        ),
-        producto: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.producto}
-          </MDTypography>
-        ),
-        categoria: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.categoria}
-          </MDTypography>
-        ),
-        clasificacionArancelaria: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.clasificacionArancelaria}
-          </MDTypography>
-        ),
-        numeroSolicitud: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.numeroSolicitud}
-          </MDTypography>
-        ),
-        solicitud: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            <a href={rowData.solicitud}>SOLICITUD</a>
-          </MDTypography>
-        ),
-        numeroAutorizacion: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.numeroAutorizacion}
-          </MDTypography>
-        ),
-        autorizacion: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            <a href={rowData.autorizacion}>AUTORIZACION</a>
-          </MDTypography>
-        ),
-        desde: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {formatDate(rowData.desde)}
-          </MDTypography>
-        ),
-        hasta: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {formatDate(rowData.hasta)}
-          </MDTypography>
-        ),
-        descripcion: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {getDescriptionContent(rowData)}
-          </MDTypography>
-        ),
+        idtra: rowData.idtra,
+        nombreCliente: rowData.nombreCliente,
+        tipoExoneracion: rowData.tipoExoneracion,
+        statusExoneracion: rowData.statusExoneracion,
+        producto: rowData.producto,
+        categoria: rowData.categoria,
+        clasificacionArancelaria: rowData.clasificacionArancelaria,
+        numeroSolicitud: rowData.numeroSolicitud,
+        solicitud: rowData.solicitud,
+        numeroAutorizacion: rowData.numeroAutorizacion,
+        autorizacion: rowData.autorizacion,
+        desde: formatDate(rowData.desde),
+        hasta: formatDate(rowData.hasta),
+        descripcion: rowData.descripcion,
+        showFullDescription: false,
       }));
 
       setRows(newRows);
@@ -158,12 +76,24 @@ function Exoneracion() {
     }
   };
 
+  const toggleDescription = (index) => {
+    setRows((prevRows) =>
+      prevRows.map((row, i) =>
+        i === index ? { ...row, showFullDescription: !row.showFullDescription } : row
+      )
+    );
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, [textFilter]);
+
   const handleDownloadExcel = () => {
     let url;
-    if (numFilter === 0 && textFilter === "") {
+    if (textFilter === "") {
       url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&Download=True`;
     } else {
-      url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&NumFilter=1&TextFilter=${textFilter}&Download=True`;
+      url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&TextFilter=${textFilter}&Download=True`;
     }
 
     axios
@@ -172,10 +102,8 @@ function Exoneracion() {
         const blob = new Blob([response.data], { type: response.headers["content-type"] });
         const filename = "tramites_activos.xlsx";
         if (window.navigator.msSaveOrOpenBlob) {
-          // IE
           window.navigator.msSaveOrOpenBlob(blob, filename);
         } else {
-          // Otros navegadores
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
@@ -190,10 +118,6 @@ function Exoneracion() {
         console.error("Error al descargar el archivo:", error);
       });
   };
-
-  useEffect(() => {
-    handleSearch();
-  }, [textFilter]);
 
   return (
     <DashboardLayout>
@@ -214,7 +138,7 @@ function Exoneracion() {
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
-                flexWrap="wrap" // Añadir flexWrap para que los elementos se envuelvan en dispositivos móviles
+                flexWrap="wrap"
               >
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MDTypography variant="h6" color="white" style={{ marginRight: "10px" }}>
@@ -240,7 +164,7 @@ function Exoneracion() {
                   </Select>
                 </div>
 
-                {/* <Button
+                <Button
                   variant="contained"
                   color="white"
                   size="medium"
@@ -249,11 +173,26 @@ function Exoneracion() {
                   sx={{ ml: 2, backgroundColor: "black" }}
                 >
                   Descargar Excel
-                </Button> */}
+                </Button>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows }}
+                  table={{
+                    columns,
+                    rows: rows.map((row, index) => ({
+                      ...row,
+                      descripcion: (
+                        <MDTypography variant="caption" color="text" fontWeight="medium">
+                          {row.showFullDescription
+                            ? row.descripcion
+                            : `${row.descripcion.slice(0, 10)}... `}
+                          <button onClick={() => toggleDescription(index)}>
+                            {row.showFullDescription ? "Ver menos" : "Ver más"}
+                          </button>
+                        </MDTypography>
+                      ),
+                    })),
+                  }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}

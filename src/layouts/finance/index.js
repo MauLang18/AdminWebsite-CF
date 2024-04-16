@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
-import SearchIcon from "@mui/icons-material/Search";
-import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
-import MyDocument from "./MyDocument";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -55,7 +52,7 @@ function Finance() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        para: "estados1@castrofallas.com",
+        para: "cxc@grupocastrofallas.com",
         asunto: `Actualización de Estado de Cuenta para Cliente ${acr}`,
         contenido: emailBody,
       }),
