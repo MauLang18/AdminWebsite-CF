@@ -48,7 +48,7 @@ function Exoneracion() {
       if (textFilter === "") {
         url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}`;
       } else {
-        url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&TextFilter=${textFilter}`;
+        url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&NumFilter=1&TextFilter=${textFilter}`;
       }
 
       const response = await axios.get(url);
@@ -61,9 +61,17 @@ function Exoneracion() {
         categoria: rowData.categoria,
         clasificacionArancelaria: rowData.clasificacionArancelaria,
         numeroSolicitud: rowData.numeroSolicitud,
-        solicitud: rowData.solicitud,
+        solicitud: (
+          <a target="blank" href={rowData.solicitud}>
+            SOLICITUD
+          </a>
+        ),
         numeroAutorizacion: rowData.numeroAutorizacion,
-        autorizacion: rowData.autorizacion,
+        autorizacion: (
+          <a target="blank" href={rowData.autorizacion}>
+            AUTORIZACION
+          </a>
+        ),
         desde: formatDate(rowData.desde),
         hasta: formatDate(rowData.hasta),
         descripcion: rowData.descripcion,
@@ -93,7 +101,7 @@ function Exoneracion() {
     if (textFilter === "") {
       url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&Download=True`;
     } else {
-      url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&TextFilter=${textFilter}&Download=True`;
+      url = `https://api.logisticacastrofallas.com/api/Exoneracion/Cliente?cliente=${name}&NumFilter=1&TextFilter=${textFilter}&Download=True`;
     }
 
     axios
