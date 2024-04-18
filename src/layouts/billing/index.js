@@ -60,68 +60,70 @@ function Billing() {
       }
 
       const response = await axios.get(url);
-      const newRows = response.data.data.map((rowData) => ({
-        origen: (
-          <Avatars
-            members={[rowData.origen].map((image, index) => [image, `Image ${index + 1}`])}
-          />
-        ),
-        pol: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.pol}
-          </MDTypography>
-        ),
-        destino: (
-          <Avatars
-            members={[rowData.destino].map((image, index) => [image, `Image ${index + 1}`])}
-          />
-        ),
-        pod: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.pod}
-          </MDTypography>
-        ),
-        closing: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {formatDate(rowData.closing)}
-          </MDTypography>
-        ),
-        etd: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {formatDate(rowData.etd)}
-          </MDTypography>
-        ),
-        eta: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {formatDate(rowData.eta)}
-          </MDTypography>
-        ),
-        carrier: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.carrier}
-          </MDTypography>
-        ),
-        vessel: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.vessel}
-          </MDTypography>
-        ),
-        voyage: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.voyage}
-          </MDTypography>
-        ),
-        transporte: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.transporte}
-          </MDTypography>
-        ),
-        modalidad: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.modalidad}
-          </MDTypography>
-        ),
-      }));
+      const newRows = response.data.data
+        .filter((rowData) => rowData.estado === 1) // Filtrar las filas con estado igual a 1
+        .map((rowData) => ({
+          origen: (
+            <Avatars
+              members={[rowData.origen].map((image, index) => [image, `Image ${index + 1}`])}
+            />
+          ),
+          pol: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.pol}
+            </MDTypography>
+          ),
+          destino: (
+            <Avatars
+              members={[rowData.destino].map((image, index) => [image, `Image ${index + 1}`])}
+            />
+          ),
+          pod: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.pod}
+            </MDTypography>
+          ),
+          closing: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {formatDate(rowData.closing)}
+            </MDTypography>
+          ),
+          etd: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {formatDate(rowData.etd)}
+            </MDTypography>
+          ),
+          eta: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {formatDate(rowData.eta)}
+            </MDTypography>
+          ),
+          carrier: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.carrier}
+            </MDTypography>
+          ),
+          vessel: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.vessel}
+            </MDTypography>
+          ),
+          voyage: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.voyage}
+            </MDTypography>
+          ),
+          transporte: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.transporte}
+            </MDTypography>
+          ),
+          modalidad: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.modalidad}
+            </MDTypography>
+          ),
+        }));
 
       setRows(newRows);
     } catch (error) {

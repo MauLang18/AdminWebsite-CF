@@ -80,98 +80,100 @@ function WHS(props) {
 
       const response = await axios.get(url);
       console.log(response.data.data);
-      const newRows = response.data.data.map((rowData) => ({
-        idtra: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.idtra}
-          </MDTypography>
-        ),
-        numeroWHS: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.numeroWHS}
-          </MDTypography>
-        ),
-        nombreCliente: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.nombreCliente}
-          </MDTypography>
-        ),
-        tipoRegistro: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.tipoRegistro}
-          </MDTypography>
-        ),
-        fechaCreacionAuditoria: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {formatDateTime(rowData.fechaCreacionAuditoria)}
-          </MDTypography>
-        ),
-        po: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.po}
-          </MDTypography>
-        ),
-        statusWHS: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.statusWHS}
-          </MDTypography>
-        ),
-        pol: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.pol}
-          </MDTypography>
-        ),
-        pod: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.pod}
-          </MDTypography>
-        ),
-        detalle: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.detalle}
-          </MDTypography>
-        ),
-        cantidadBultos: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.cantidadBultos}
-          </MDTypography>
-        ),
-        tipoBultos: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.tipoBultos}
-          </MDTypography>
-        ),
-        vinculacionOtroRegistro: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {rowData.vinculacionOtroRegistro}
-          </MDTypography>
-        ),
-        whsReceipt: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            <a target="blank" href={rowData.whsReceipt}>
-              WHS Receipt
-            </a>
-          </MDTypography>
-        ),
-        documentoregistro: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            <a target="blank" href={rowData.documentoregistro}>
-              Documentación Registro
-            </a>
-          </MDTypography>
-        ),
-        imagen: (
-          <Avatars
-            members={[
-              rowData.imagen1,
-              rowData.imagen2,
-              rowData.imagen3,
-              rowData.imagen4,
-              rowData.imagen5,
-            ].map((image, index) => [image, `Image ${index + 1}`])}
-          />
-        ),
-      }));
+      const newRows = response.data.data
+        .filter((rowData) => rowData.estado === 1) // Filtrar los elementos con estado igual a 1
+        .map((rowData) => ({
+          idtra: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.idtra}
+            </MDTypography>
+          ),
+          numeroWHS: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.numeroWHS}
+            </MDTypography>
+          ),
+          nombreCliente: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.nombreCliente}
+            </MDTypography>
+          ),
+          tipoRegistro: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.tipoRegistro}
+            </MDTypography>
+          ),
+          fechaCreacionAuditoria: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {formatDateTime(rowData.fechaCreacionAuditoria)}
+            </MDTypography>
+          ),
+          po: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.po}
+            </MDTypography>
+          ),
+          statusWHS: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.statusWHS}
+            </MDTypography>
+          ),
+          pol: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.pol}
+            </MDTypography>
+          ),
+          pod: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.pod}
+            </MDTypography>
+          ),
+          detalle: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.detalle}
+            </MDTypography>
+          ),
+          cantidadBultos: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.cantidadBultos}
+            </MDTypography>
+          ),
+          tipoBultos: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.tipoBultos}
+            </MDTypography>
+          ),
+          vinculacionOtroRegistro: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {rowData.vinculacionOtroRegistro}
+            </MDTypography>
+          ),
+          whsReceipt: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              <a target="blank" href={rowData.whsReceipt}>
+                WHS Receipt
+              </a>
+            </MDTypography>
+          ),
+          documentoregistro: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              <a target="blank" href={rowData.documentoregistro}>
+                Documentación Registro
+              </a>
+            </MDTypography>
+          ),
+          imagen: (
+            <Avatars
+              members={[
+                rowData.imagen1,
+                rowData.imagen2,
+                rowData.imagen3,
+                rowData.imagen4,
+                rowData.imagen5,
+              ].map((image, index) => [image, `Image ${index + 1}`])}
+            />
+          ),
+        }));
 
       setRows(newRows);
     } catch (error) {

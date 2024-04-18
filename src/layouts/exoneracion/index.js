@@ -52,31 +52,33 @@ function Exoneracion() {
       }
 
       const response = await axios.get(url);
-      const newRows = response.data.data.map((rowData) => ({
-        idtra: rowData.idtra,
-        nombreCliente: rowData.nombreCliente,
-        tipoExoneracion: rowData.tipoExoneracion,
-        statusExoneracion: rowData.statusExoneracion,
-        producto: rowData.producto,
-        categoria: rowData.categoria,
-        clasificacionArancelaria: rowData.clasificacionArancelaria,
-        numeroSolicitud: rowData.numeroSolicitud,
-        solicitud: (
-          <a target="blank" href={rowData.solicitud}>
-            SOLICITUD
-          </a>
-        ),
-        numeroAutorizacion: rowData.numeroAutorizacion,
-        autorizacion: (
-          <a target="blank" href={rowData.autorizacion}>
-            AUTORIZACION
-          </a>
-        ),
-        desde: formatDate(rowData.desde),
-        hasta: formatDate(rowData.hasta),
-        descripcion: rowData.descripcion,
-        showFullDescription: false,
-      }));
+      const newRows = response.data.data
+        .filter((rowData) => rowData.estado === 1)
+        .map((rowData) => ({
+          idtra: rowData.idtra,
+          nombreCliente: rowData.nombreCliente,
+          tipoExoneracion: rowData.tipoExoneracion,
+          statusExoneracion: rowData.statusExoneracion,
+          producto: rowData.producto,
+          categoria: rowData.categoria,
+          clasificacionArancelaria: rowData.clasificacionArancelaria,
+          numeroSolicitud: rowData.numeroSolicitud,
+          solicitud: (
+            <a target="blank" href={rowData.solicitud}>
+              SOLICITUD
+            </a>
+          ),
+          numeroAutorizacion: rowData.numeroAutorizacion,
+          autorizacion: (
+            <a target="blank" href={rowData.autorizacion}>
+              AUTORIZACION
+            </a>
+          ),
+          desde: formatDate(rowData.desde),
+          hasta: formatDate(rowData.hasta),
+          descripcion: rowData.descripcion,
+          showFullDescription: false,
+        }));
 
       setRows(newRows);
     } catch (error) {
