@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -11,14 +13,31 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import poeMapping from "layouts/tracking/components/Projects/data/json/poe.json";
+import polMapping from "layouts/tracking/components/Projects/data/json/pol.json";
+import destinoMapping from "layouts/tracking/components/Projects/data/json/destino.json";
+import origenMapping from "layouts/tracking/components/Projects/data/json/origen.json";
+import transporteMapping from "layouts/tracking/components/Projects/data/json/transporte.json";
+import statusMapping from "layouts/tracking/components/Projects/data/json/status.json";
 import axios from "axios";
 
 function Finance() {
   // const { columns } = authorsTableData();
   const [latestRecord, setLatestRecord] = useState(null);
-  const [textFilter, setTextFilter] = useState(""); // Valor inicial del campo de texto
+  const [textFilter, setTextFilter] = useState("");
+  const [searchResults, setSearchResults] = useState([{}]);
   const user = JSON.parse(localStorage.getItem("users"));
   const { name, acr } = user;
+  const apiUrl = `https://api.logisticacastrofallas.com/api/CreditoCliente?&code=${name}`;
+
+  const handleSearch2 = async () => {
+    try {
+      const response = await axios.get(apiUrl);
+      setSearchResults(response.data.data.value || []);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleTextFilterChange = (event) => {
     setTextFilter(event.target.value);
@@ -71,8 +90,62 @@ function Finance() {
       });
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString || dateString.trim() === "") {
+      return "NO DISPONIBLE";
+    }
+
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
+
+    return formattedDate;
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    if (!dateTimeString || dateTimeString.trim() === "") {
+      return "NO DISPONIBLE";
+    }
+
+    const options = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    };
+    const formattedDateTime = new Date(dateTimeString).toLocaleString("es-ES", options);
+
+    return formattedDateTime;
+  };
+
+  const getPoeName = (poe) => {
+    return poeMapping[poe] || "";
+  };
+
+  const getPolName = (pol) => {
+    return polMapping[pol] || "";
+  };
+
+  const getStatusName = (pol) => {
+    return statusMapping[pol] || "";
+  };
+
+  const getTransporteName = (pol) => {
+    return transporteMapping[pol] || "";
+  };
+
+  const getDestinoName = (pol) => {
+    return destinoMapping[pol] || "";
+  };
+
+  const getOrigenName = (pol) => {
+    return origenMapping[pol] || "";
+  };
+
   useEffect(() => {
     handleSearch();
+    handleSearch2();
   }, []);
 
   return (
@@ -122,6 +195,52 @@ function Finance() {
                 </MDBox>
               </MDBox>
             </Card>
+          </Grid>
+          <Grid container spacing={6}>
+            {searchResults.map((result, index) => (
+              <Box key={index} sx={{ display: "grid", gap: 1 }}>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                  <Typography variant="h6">Tipo de cliente:</Typography>
+                  <Typography variant="h6">Limite de credito:</Typography>
+                  <Typography variant="h6">Condiciones de pago:</Typography>
+                </Box>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                  <Typography>{getDestinoName(result.new_tipodeproveedor)}</Typography>
+                  <Typography>{result.creditlimit}</Typography>
+                  <Typography>{getDestinoName(result.paymenttermscode)}</Typography>
+                </Box>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                  <Typography variant="h6">Dias de credito:</Typography>
+                  <Typography variant="h6">Fecha inicio credito:</Typography>
+                  <Typography variant="h6">Fecha renovacion credito:</Typography>
+                </Box>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                  <Typography>{result.new_diasdecredito}</Typography>
+                  <Typography>{formatDate(result.new_fechadeiniciodecredito)}</Typography>
+                  <Typography>{formatDate(result.new_fechaderenovaciondecredito)}</Typography>
+                </Box>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                  <Typography variant="h6">CREDITO INCLUYE:</Typography>
+                </Box>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                  <Typography>{getDestinoName(result.new_3)}</Typography>
+                </Box>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                  <Typography variant="h6">CREDITO NO INCLUYE:</Typography>
+                </Box>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                  <Typography>{getDestinoName(result.new_creditonoincluye)}</Typography>
+                </Box>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                  <Typography variant="h6">% FINANCIAMIENTO MENSUAL:</Typography>
+                  <Typography variant="h6">INTERES MORATORIO MENSUAL:</Typography>
+                </Box>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                  <Typography>{result.new_financiamiento}</Typography>
+                  <Typography>{result.new_intersmoratoriomensual}</Typography>
+                </Box>
+              </Box>
+            ))}
           </Grid>
         </Grid>
       </MDBox>
