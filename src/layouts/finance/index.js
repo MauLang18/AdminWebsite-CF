@@ -154,7 +154,7 @@ function Finance() {
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
-            <Card>
+            <Card sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <MDBox
                 mx={2}
                 mt={-3}
@@ -193,55 +193,59 @@ function Finance() {
                     Solicitar Actualización
                   </Button>
                 </MDBox>
+                <Box sx={{ height: "50px" }} />
+                {searchResults.map((result, index) => (
+                  <Box
+                    key={index}
+                    sx={{ display: "grid", gap: 1, mx: "auto", textAlign: "center" }}
+                  >
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                      <Typography variant="h6">Tipo de cliente:</Typography>
+                      <Typography variant="h6">Limite de credito:</Typography>
+                      <Typography variant="h6">Condiciones de pago:</Typography>
+                    </Box>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                      <Typography>{getDestinoName(result.new_tipodeproveedor)}</Typography>
+                      <Typography>{result.creditlimit}</Typography>
+                      <Typography>{getDestinoName(result.paymenttermscode)}</Typography>
+                    </Box>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                      <Typography variant="h6">Dias de credito:</Typography>
+                      <Typography variant="h6">Fecha inicio credito:</Typography>
+                      <Typography variant="h6">Fecha renovacion credito:</Typography>
+                    </Box>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                      <Typography>{result.new_diasdecredito}</Typography>
+                      <Typography>{formatDate(result.new_fechadeiniciodecredito)}</Typography>
+                      <Typography>{formatDate(result.new_fechaderenovaciondecredito)}</Typography>
+                    </Box>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                      <Typography variant="h6">CREDITO INCLUYE:</Typography>
+                    </Box>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                      <Typography>{getDestinoName(result.new_3)}</Typography>
+                    </Box>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                      <Typography variant="h6">CREDITO NO INCLUYE:</Typography>
+                    </Box>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                      <Typography>{getDestinoName(result.new_creditonoincluye)}</Typography>
+                    </Box>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                      <Typography variant="h6">% FINANCIAMIENTO MENSUAL:</Typography>
+                      <Typography variant="h6">INTERES MORATORIO MENSUAL:</Typography>
+                    </Box>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                      <Typography>{result.new_financiamiento}</Typography>
+                      <Typography>{result.new_intersmoratoriomensual}</Typography>
+                    </Box>
+                  </Box>
+                ))}
               </MDBox>
             </Card>
           </Grid>
-          <Grid container spacing={6}>
-            {searchResults.map((result, index) => (
-              <Box key={index} sx={{ display: "grid", gap: 1 }}>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
-                  <Typography variant="h6">Tipo de cliente:</Typography>
-                  <Typography variant="h6">Limite de credito:</Typography>
-                  <Typography variant="h6">Condiciones de pago:</Typography>
-                </Box>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
-                  <Typography>{getDestinoName(result.new_tipodeproveedor)}</Typography>
-                  <Typography>{result.creditlimit}</Typography>
-                  <Typography>{getDestinoName(result.paymenttermscode)}</Typography>
-                </Box>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
-                  <Typography variant="h6">Dias de credito:</Typography>
-                  <Typography variant="h6">Fecha inicio credito:</Typography>
-                  <Typography variant="h6">Fecha renovacion credito:</Typography>
-                </Box>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
-                  <Typography>{result.new_diasdecredito}</Typography>
-                  <Typography>{formatDate(result.new_fechadeiniciodecredito)}</Typography>
-                  <Typography>{formatDate(result.new_fechaderenovaciondecredito)}</Typography>
-                </Box>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
-                  <Typography variant="h6">CREDITO INCLUYE:</Typography>
-                </Box>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
-                  <Typography>{getDestinoName(result.new_3)}</Typography>
-                </Box>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
-                  <Typography variant="h6">CREDITO NO INCLUYE:</Typography>
-                </Box>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
-                  <Typography>{getDestinoName(result.new_creditonoincluye)}</Typography>
-                </Box>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
-                  <Typography variant="h6">% FINANCIAMIENTO MENSUAL:</Typography>
-                  <Typography variant="h6">INTERES MORATORIO MENSUAL:</Typography>
-                </Box>
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
-                  <Typography>{result.new_financiamiento}</Typography>
-                  <Typography>{result.new_intersmoratoriomensual}</Typography>
-                </Box>
-              </Box>
-            ))}
-          </Grid>
+          <Box sx={{ height: "50px" }} />
+          <Grid container spacing={6}></Grid>
         </Grid>
       </MDBox>
       <Footer />
