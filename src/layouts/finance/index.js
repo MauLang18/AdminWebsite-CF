@@ -211,7 +211,11 @@ function Finance() {
                     <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 1 }}>
                       <Typography>{getClienteName(result.new_tipodeproveedor)}</Typography>
                       <Typography>{getDivisaName(result._transactioncurrencyid_value)}</Typography>
-                      <Typography>{result.creditlimit.toLocaleString()}</Typography>
+                      <Typography>
+                        {result.creditlimit != null
+                          ? result.creditlimit.toLocaleString()
+                          : "Sin datos"}
+                      </Typography>
                       <Typography>{getCondicionName(result.paymenttermscode)}</Typography>
                     </Box>
                     <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
