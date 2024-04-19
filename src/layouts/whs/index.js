@@ -73,9 +73,9 @@ function WHS(props) {
     try {
       let url;
       if (numFilter === 0 && textFilter === "") {
-        url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}`;
+        url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?order=desc&whs=${pol}&cliente=${name}`;
       } else {
-        url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}&NumFilter=1&TextFilter=${textFilter}`;
+        url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?order=desc&whs=${pol}&cliente=${name}&NumFilter=1&TextFilter=${textFilter}`;
       }
 
       const response = await axios.get(url);
@@ -184,9 +184,9 @@ function WHS(props) {
   const handleDownloadExcel = () => {
     let url;
     if (numFilter === 0 && textFilter === "") {
-      url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}&Download=True`;
+      url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?order=desc&whs=${pol}&cliente=${name}&Download=True`;
     } else {
-      url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?whs=${pol}&cliente=${name}&NumFilter=1&TextFilter=${textFilter}&Download=True`;
+      url = `https://api.logisticacastrofallas.com/api/Whs/Cliente?order=desc&whs=${pol}&cliente=${name}&NumFilter=1&TextFilter=${textFilter}&Download=True`;
     }
 
     axios

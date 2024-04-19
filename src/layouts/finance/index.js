@@ -16,6 +16,7 @@ import Footer from "examples/Footer";
 import clienteMapping from "layouts/finance/data/cliente.json";
 import condicionMapping from "layouts/finance/data/condicion.json";
 import creditoMapping from "layouts/finance/data/credito.json";
+import divisaMapping from "layouts/finance/data/divisa.json";
 import axios from "axios";
 
 function Finance() {
@@ -141,6 +142,10 @@ function Finance() {
     return nombresEstados.join(", ");
   };
 
+  const getDivisaName = (divisa) => {
+    return divisaMapping[divisa] || "";
+  };
+
   useEffect(() => {
     handleSearch();
     handleSearch2();
@@ -197,14 +202,16 @@ function Finance() {
                     key={index}
                     sx={{ display: "grid", gap: 1, mx: "auto", textAlign: "center" }}
                   >
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 1 }}>
                       <Typography variant="h6">Tipo de cliente:</Typography>
+                      <Typography variant="h6">Divisa:</Typography>
                       <Typography variant="h6">Limite de credito:</Typography>
                       <Typography variant="h6">Condiciones de pago:</Typography>
                     </Box>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 1 }}>
                       <Typography>{getClienteName(result.new_tipodeproveedor)}</Typography>
-                      <Typography>{result.creditlimit}</Typography>
+                      <Typography>{getDivisaName(result._transactioncurrencyid_value)}</Typography>
+                      <Typography>{result.creditlimit.toLocaleString()}</Typography>
                       <Typography>{getCondicionName(result.paymenttermscode)}</Typography>
                     </Box>
                     <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>

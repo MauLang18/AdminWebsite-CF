@@ -1,3 +1,10 @@
 {
-    "1":"30 días"
+  "1": "Pago a 30 días",
+  "2": "2% 10, pago a 30 días",
+  "3": "Pago a 45 días",
+  "4": "Pago a 60 días",
+  "10": "Pago al contado",
+  "38": "30, 60, 90",
+  "39": "Aplazado",
+  "100000000": "Pago a 3 días"
 }
