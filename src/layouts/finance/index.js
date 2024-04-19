@@ -13,12 +13,9 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import poeMapping from "layouts/tracking/components/Projects/data/json/poe.json";
-import polMapping from "layouts/tracking/components/Projects/data/json/pol.json";
-import destinoMapping from "layouts/tracking/components/Projects/data/json/destino.json";
-import origenMapping from "layouts/tracking/components/Projects/data/json/origen.json";
-import transporteMapping from "layouts/tracking/components/Projects/data/json/transporte.json";
-import statusMapping from "layouts/tracking/components/Projects/data/json/status.json";
+import clienteMapping from "layouts/finance/data/cliente.json";
+import condicionMapping from "layouts/finance/data/condicion.json";
+import creditoMapping from "layouts/finance/data/credito.json";
 import axios from "axios";
 
 function Finance() {
@@ -119,28 +116,29 @@ function Finance() {
     return formattedDateTime;
   };
 
-  const getPoeName = (poe) => {
-    return poeMapping[poe] || "";
+  const getClienteName = (cliente) => {
+    return clienteMapping[cliente] || "";
   };
 
-  const getPolName = (pol) => {
-    return polMapping[pol] || "";
+  const getCondicionName = (condicion) => {
+    return condicionMapping[condicion] || "";
   };
 
-  const getStatusName = (pol) => {
-    return statusMapping[pol] || "";
-  };
+  const getCreditoName = (creditoStr) => {
+    if (creditoStr == null) {
+      return "No hay datos disponibles";
+    }
 
-  const getTransporteName = (pol) => {
-    return transporteMapping[pol] || "";
-  };
+    const creditos = creditoStr.split(",");
 
-  const getDestinoName = (pol) => {
-    return destinoMapping[pol] || "";
-  };
+    const nombresEstados = [];
 
-  const getOrigenName = (pol) => {
-    return origenMapping[pol] || "";
+    creditos.forEach((credito) => {
+      const nombreEstado = creditoMapping[credito.trim()] || "";
+      nombresEstados.push(nombreEstado);
+    });
+
+    return nombresEstados.join(", ");
   };
 
   useEffect(() => {
@@ -205,9 +203,9 @@ function Finance() {
                       <Typography variant="h6">Condiciones de pago:</Typography>
                     </Box>
                     <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
-                      <Typography>{getDestinoName(result.new_tipodeproveedor)}</Typography>
+                      <Typography>{getClienteName(result.new_tipodeproveedor)}</Typography>
                       <Typography>{result.creditlimit}</Typography>
-                      <Typography>{getDestinoName(result.paymenttermscode)}</Typography>
+                      <Typography>{getCondicionName(result.paymenttermscode)}</Typography>
                     </Box>
                     <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
                       <Typography variant="h6">Dias de credito:</Typography>
@@ -223,13 +221,13 @@ function Finance() {
                       <Typography variant="h6">CREDITO INCLUYE:</Typography>
                     </Box>
                     <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
-                      <Typography>{getDestinoName(result.new_3)}</Typography>
+                      <Typography>{getCreditoName(result.new_3)}</Typography>
                     </Box>
                     <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
                       <Typography variant="h6">CREDITO NO INCLUYE:</Typography>
                     </Box>
                     <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
-                      <Typography>{getDestinoName(result.new_creditonoincluye)}</Typography>
+                      <Typography>{getCreditoName(result.new_creditonoincluye)}</Typography>
                     </Box>
                     <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
                       <Typography variant="h6">% FINANCIAMIENTO MENSUAL:</Typography>
