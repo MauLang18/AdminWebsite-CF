@@ -157,6 +157,8 @@ function Billing() {
         "Managua, Nicaragua",
         "San Pedro Sula, Honduras",
         "San Salvador, El Salvador",
+        "Puerto Moin, CRC",
+        "Puerto Caldera, CRC"
       ]);
     } else if (numFilter === 2) {
       // Si se selecciona POD
