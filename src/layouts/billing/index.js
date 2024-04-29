@@ -167,6 +167,12 @@ function Billing() {
         "San Pedro Sula, Honduras",
         "San Salvador, El Salvador",
         "Managua, Nicaragua",
+        "Newark (New Jersey), USA",
+        "Los Angeles (California), USA",
+        "Port Everglades (Florida), USA",
+        "Savannah (Georgia), USA",
+        "Wilmington (North Carolina), USA",
+        "Houston (Texas), USA",
       ]);
     } else if (numFilter === 3) {
       // Si se selecciona POD
