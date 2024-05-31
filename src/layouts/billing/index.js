@@ -36,17 +36,27 @@ function Billing() {
     { label: "Transporte", state: "" },
     { label: "Modalidad", state: "" },
   ]);
-  const [numFilter, setNumFilter] = useState(0);
+  const [activeStep, setActiveStep] = useState(0);
   const [secondSelectOptions, setSecondSelectOptions] = useState([]);
 
-  const handleNumFilterChange = (stepIndex) => {
-    setNumFilter(stepIndex);
+  const handleSelectChange = (value) => {
+    const newSteps = [...steps];
+    newSteps[activeStep].state = value;
+    setSteps(newSteps);
   };
 
-  const handleSelectChange = (index, value) => {
-    const newSteps = [...steps];
-    newSteps[index].state = value;
-    setSteps(newSteps);
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleResetFilters = () => {
+    setSteps([
+      { label: "POL", state: "" },
+      { label: "POD", state: "" },
+      { label: "Transporte", state: "" },
+      { label: "Modalidad", state: "" },
+    ]);
+    setActiveStep(0);
   };
 
   const formatDate = (dateString) => {
@@ -56,11 +66,14 @@ function Billing() {
 
   const handleSearch = async () => {
     try {
-      const textFilters = ["polValue", "poeValue", "transporteValue", "modalidadValue"];
-      const [polFilter, poeFilter, transporteFilter, modalidadFilter] = textFilters;
-      let url = `https://api.logisticacastrofallas.com/api/Itinerario?polFilter=${polFilter}&poeFilter=${poeFilter}&transporteFilter=${transporteFilter}&modalidadFilter=${modalidadFilter}`;
+      const polFilter = steps[0].state;
+      const poeFilter = steps[1].state;
+      const transporteFilter = steps[2].state;
+      const modalidadFilter = steps[3].state;
 
-      const response = await axios.get(url);
+      const response = await axios.get(
+        `https://api.logisticacastrofallas.com/api/Itinerario?polFilter=${polFilter}&poeFilter=${poeFilter}&transporteFilter=${transporteFilter}&modalidadFilter=${modalidadFilter}`
+      );
       const newRows = response.data.data
         .filter((rowData) => rowData.estado === 1)
         .map((rowData) => ({
@@ -125,7 +138,6 @@ function Billing() {
             </MDTypography>
           ),
         }));
-
       setRows(newRows);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -137,7 +149,7 @@ function Billing() {
   }, [steps]);
 
   useEffect(() => {
-    switch (numFilter) {
+    switch (activeStep) {
       case 0:
         setSecondSelectOptions([
           "Ningbo, China",
@@ -186,7 +198,7 @@ function Billing() {
       default:
         setSecondSelectOptions([]);
     }
-  }, [numFilter]);
+  }, [activeStep]);
 
   return (
     <DashboardLayout>
@@ -214,17 +226,17 @@ function Billing() {
                 </MDTypography>
                 <Box width="100%" display="flex" flexDirection="column" alignItems="center">
                   <Stepper
-                    activeStep={numFilter}
+                    activeStep={activeStep}
                     orientation="horizontal"
                     style={{ width: "100%" }}
                   >
                     {steps.map((step, index) => (
-                      <Step key={index} onClick={() => handleNumFilterChange(index)}>
+                      <Step key={index}>
                         <StepLabel>{step.label}</StepLabel>
-                        {numFilter === index && (
+                        <StepContent>
                           <Select
                             value={step.state}
-                            onChange={(e) => handleSelectChange(index, e.target.value)}
+                            onChange={(e) => handleSelectChange(e.target.value)}
                             variant="standard"
                             size="medium"
                             className="mb-2 md:mb-0 md:mr-2 w-full md:w-auto"
@@ -235,22 +247,45 @@ function Billing() {
                               </MenuItem>
                             ))}
                           </Select>
-                        )}
+                          <Box sx={{ mt: 2 }}>
+                            <Button
+                              variant="contained"
+                              color="white"
+                              size="medium"
+                              onClick={handleNext}
+                              style={{
+                                display: activeStep === steps.length - 1 ? "none" : "inline-block",
+                              }}
+                              sx={{ ml: 2, backgroundColor: "black" }}
+                            >
+                              Siguiente
+                            </Button>
+                          </Box>
+                        </StepContent>
                       </Step>
                     ))}
                   </Stepper>
+                  <Box sx={{ mt: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="white"
+                      size="medium"
+                      onClick={handleResetFilters}
+                      sx={{ ml: 2, backgroundColor: "black" }}
+                    >
+                      Reiniciar filtros
+                    </Button>
+                  </Box>
                 </Box>
               </MDBox>
               <MDBox pt={3}>
-                {numFilter === steps.length - 1 && rows.length > 0 ? (
-                  <DataTable
-                    table={{ columns, rows }}
-                    isSorted={false}
-                    entriesPerPage={false}
-                    showTotalEntries={false}
-                    noEndBorder
-                  />
-                ) : null}
+                <DataTable
+                  table={{ columns, rows }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
               </MDBox>
             </Card>
           </Grid>
