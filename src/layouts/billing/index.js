@@ -3,9 +3,14 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import StepContent from "@mui/material/StepContent";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -25,43 +30,39 @@ import Avatars from "../billing/data/Avatars";
 function Billing() {
   const { columns } = authorsTableData();
   const [rows, setRows] = useState([]);
-  const [numFilter, setNumFilter] = useState(0); // Valor inicial del combobox
-  const [textFilter, setTextFilter] = useState(""); // Valor inicial del campo de texto
-
+  const [steps, setSteps] = useState([
+    { label: "POL", state: "" },
+    { label: "POD", state: "" },
+    { label: "Transporte", state: "" },
+    { label: "Modalidad", state: "" },
+  ]);
+  const [numFilter, setNumFilter] = useState(0);
   const [secondSelectOptions, setSecondSelectOptions] = useState([]);
 
-  const handleNumFilterChange = (event) => {
-    setNumFilter(event.target.value);
-    setTextFilter("");
+  const handleNumFilterChange = (stepIndex) => {
+    setNumFilter(stepIndex);
   };
 
-  const handleTextFilterChange = (event) => {
-    setTextFilter(event.target.value);
+  const handleSelectChange = (index, value) => {
+    const newSteps = [...steps];
+    newSteps[index].state = value;
+    setSteps(newSteps);
   };
 
   const formatDate = (dateString) => {
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-    var formattedDate;
-    if (dateString !== null) {
-      formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
-    } else {
-      formattedDate = "";
-    }
-    return formattedDate;
+    return dateString ? new Date(dateString).toLocaleDateString("es-ES", options) : "";
   };
 
   const handleSearch = async () => {
     try {
-      let url;
-      if (numFilter === 0 && textFilter === "") {
-        url = `https://api.logisticacastrofallas.com/api/Itinerario`;
-      } else {
-        url = `https://api.logisticacastrofallas.com/api/Itinerario?NumFilter=${numFilter}&TextFilter=${textFilter}`;
-      }
+      const textFilters = ["polValue", "poeValue", "transporteValue", "modalidadValue"];
+      const [polFilter, poeFilter, transporteFilter, modalidadFilter] = textFilters;
+      let url = `https://api.logisticacastrofallas.com/api/Itinerario?polFilter=${polFilter}&poeFilter=${poeFilter}&transporteFilter=${transporteFilter}&modalidadFilter=${modalidadFilter}`;
 
       const response = await axios.get(url);
       const newRows = response.data.data
-        .filter((rowData) => rowData.estado === 1) // Filtrar las filas con estado igual a 1
+        .filter((rowData) => rowData.estado === 1)
         .map((rowData) => ({
           origen: (
             <Avatars
@@ -133,58 +134,57 @@ function Billing() {
 
   useEffect(() => {
     handleSearch();
-  }, [textFilter]);
+  }, [steps]);
 
   useEffect(() => {
-    // Definir las opciones para el segundo select según la opción seleccionada en el primero
-    if (numFilter === 1) {
-      // Si se selecciona POL
-      setSecondSelectOptions([
-        "Ningbo, China",
-        "Shanghai, China",
-        "Qingdao, China",
-        "Xiamen, China",
-        "Yantian, China",
-        "Guangzhou, China",
-        "Miami, USA",
-        "SJO, CRC",
-        "PVG, China",
-        "NKG, China",
-        "PEK, China",
-        "CFZ, Panama",
-        "Ciudad Hidalgo, MX",
-        "Ciudad de Guatemala, Guatemala",
-        "Managua, Nicaragua",
-        "San Pedro Sula, Honduras",
-        "San Salvador, El Salvador",
-        "Puerto Moin, CRC",
-        "Puerto Caldera, CRC",
-      ]);
-    } else if (numFilter === 2) {
-      // Si se selecciona POD
-      setSecondSelectOptions([
-        "CFZ, Panama",
-        "SJO, CRC",
-        "Ciudad Guatemala, Guatemala",
-        "San Pedro Sula, Honduras",
-        "San Salvador, El Salvador",
-        "Managua, Nicaragua",
-        "Newark (New Jersey), USA",
-        "Los Angeles (California), USA",
-        "Port Everglades (Florida), USA",
-        "Savannah (Georgia), USA",
-        "Wilmington (North Carolina), USA",
-        "Houston (Texas), USA",
-      ]);
-    } else if (numFilter === 3) {
-      // Si se selecciona POD
-      setSecondSelectOptions(["Aereo", "Maritimo", "Terrestre"]);
-    } else if (numFilter === 4) {
-      // Si se selecciona POD
-      setSecondSelectOptions(["LCL", "LTL", "FCL", "FTL", "Multimodal"]);
-    } else {
-      // Si se selecciona Todos, reinicia las opciones del segundo select
-      setSecondSelectOptions([]);
+    switch (numFilter) {
+      case 0:
+        setSecondSelectOptions([
+          "Ningbo, China",
+          "Shanghai, China",
+          "Qingdao, China",
+          "Xiamen, China",
+          "Yantian, China",
+          "Guangzhou, China",
+          "Miami, USA",
+          "SJO, CRC",
+          "PVG, China",
+          "NKG, China",
+          "PEK, China",
+          "CFZ, Panama",
+          "Ciudad Hidalgo, MX",
+          "Ciudad de Guatemala, Guatemala",
+          "Managua, Nicaragua",
+          "San Pedro Sula, Honduras",
+          "San Salvador, El Salvador",
+          "Puerto Moin, CRC",
+          "Puerto Caldera, CRC",
+        ]);
+        break;
+      case 1:
+        setSecondSelectOptions([
+          "CFZ, Panama",
+          "SJO, CRC",
+          "Ciudad Guatemala, Guatemala",
+          "San Pedro Sula, Honduras",
+          "San Salvador, El Salvador",
+          "Managua, Nicaragua",
+          "Newark (New Jersey), USA",
+          "Los Angeles (California), USA",
+          "Port Everglades (Florida), USA",
+          "Savannah (Georgia), USA",
+          "Wilmington (North Carolina), USA",
+          "Houston (Texas), USA",
+        ]);
+        break;
+      case 2:
+        setSecondSelectOptions(["Aereo", "Maritimo", "Terrestre"]);
+        break;
+      case 3:
+        setSecondSelectOptions(["LCL", "LTL", "FCL", "FTL", "Multimodal"]);
+        break;
+      default:
+        setSecondSelectOptions([]);
     }
   }, [numFilter]);
 
@@ -207,59 +207,50 @@ function Billing() {
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
-                flexWrap="wrap" // Añadir flexWrap para que los elementos se envuelvan en dispositivos móviles
+                flexWrap="wrap"
               >
                 <MDTypography variant="h6" color="white">
                   Itinerarios
                 </MDTypography>
-                <Select
-                  value={numFilter}
-                  onChange={handleNumFilterChange}
-                  variant="standard"
-                  size="medium"
-                  className="mb-2 md:mb-0 md:mr-2 w-full md:w-auto"
-                >
-                  <MenuItem value={0}>Todos</MenuItem>
-                  <MenuItem value={1}>Filtrar por POL</MenuItem>
-                  <MenuItem value={2}>Filtrar por POD</MenuItem>
-                  <MenuItem value={3}>Filtrar por Transporte</MenuItem>
-                  <MenuItem value={4}>Filtrar por Modalidad</MenuItem>
-                </Select>
-                {/* Mostrar el segundo select si se selecciona POL o POD */}
-                {numFilter !== 0 && (
-                  <Select
-                    value={textFilter}
-                    onChange={handleTextFilterChange}
-                    variant="standard"
-                    size="medium"
-                    className="mb-2 md:mb-0 md:mr-2 w-full md:w-auto"
+                <Box width="100%" display="flex" flexDirection="column" alignItems="center">
+                  <Stepper
+                    activeStep={numFilter}
+                    orientation="horizontal"
+                    style={{ width: "100%" }}
                   >
-                    {secondSelectOptions.map((option, index) => (
-                      <MenuItem key={index} value={option}>
-                        {option}
-                      </MenuItem>
+                    {steps.map((step, index) => (
+                      <Step key={index} onClick={() => handleNumFilterChange(index)}>
+                        <StepLabel>{step.label}</StepLabel>
+                        {numFilter === index && (
+                          <Select
+                            value={step.state}
+                            onChange={(e) => handleSelectChange(index, e.target.value)}
+                            variant="standard"
+                            size="medium"
+                            className="mb-2 md:mb-0 md:mr-2 w-full md:w-auto"
+                          >
+                            {secondSelectOptions.map((option, i) => (
+                              <MenuItem key={i} value={option}>
+                                {option}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )}
+                      </Step>
                     ))}
-                  </Select>
-                )}
-                <Button
-                  variant="contained"
-                  color="white"
-                  size="medium"
-                  startIcon={<SearchIcon />}
-                  onClick={handleSearch}
-                  className="md:mt-0 w-full md:w-auto"
-                >
-                  Buscar
-                </Button>
+                  </Stepper>
+                </Box>
               </MDBox>
               <MDBox pt={3}>
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
+                {numFilter === steps.length - 1 && rows.length > 0 ? (
+                  <DataTable
+                    table={{ columns, rows }}
+                    isSorted={false}
+                    entriesPerPage={false}
+                    showTotalEntries={false}
+                    noEndBorder
+                  />
+                ) : null}
               </MDBox>
             </Card>
           </Grid>
