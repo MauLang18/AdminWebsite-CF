@@ -280,7 +280,7 @@ export default function MyComponent() {
       ),
       costo: (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {rowData.new_montocostoestimado}
+          {rowData.new_proyecciondeingreso}
         </MDTypography>
       ),
       facturasCf: (
