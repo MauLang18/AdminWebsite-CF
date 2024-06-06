@@ -25,7 +25,7 @@ function Exoneracion() {
   const [rows, setRows] = useState([]);
   const [textFilter, setTextFilter] = useState("");
   const user = JSON.parse(localStorage.getItem("users"));
-  const { name } = user;
+  const { name, family_name, email, acr } = user;
 
   const handleTextFilterChange = (event) => {
     setTextFilter(event.target.value);
@@ -81,8 +81,26 @@ function Exoneracion() {
         }));
 
       setRows(newRows);
+
+      // Logging request for success
+      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+        Usuario: `${family_name} / ${email} / ${acr}`,
+        Modulo: "Exoneracion",
+        TipoMetodo: "Busqueda",
+        Parametros: JSON.stringify({ textFilter }),
+        Estado: 1,
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
+
+      // Log the error
+      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+        Usuario: `${family_name} / ${email} / ${acr}`,
+        Modulo: "Exoneracion",
+        TipoMetodo: "Busqueda",
+        Parametros: JSON.stringify({ textFilter }),
+        Estado: 0,
+      });
     }
   };
 

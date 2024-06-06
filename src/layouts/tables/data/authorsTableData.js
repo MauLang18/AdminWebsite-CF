@@ -21,7 +21,7 @@ export default function MyComponent() {
   const [apiData, setApiData] = useState([]); // Estado para almacenar los datos de la API
 
   const user = JSON.parse(localStorage.getItem("users"));
-  const { name } = user;
+  const { name, acr, email, family_name } = user;
 
   useEffect(() => {
     // Llamada a la API al montar el componente
@@ -31,8 +31,27 @@ export default function MyComponent() {
           `https://api.logisticacastrofallas.com/api/TrackingLogin/Activo?cliente=${name}`
         );
         setApiData(response.data.data.value);
+        setRows(newRows);
+
+        // Logging request for success
+        await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "Tramites Activos",
+          TipoMetodo: "Busqueda",
+          Parametros: "",
+          Estado: 1,
+        });
       } catch (error) {
         console.error("Error fetching data:", error);
+  
+        // Log the error
+        await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "Tramites Activos",
+          TipoMetodo: "Busqueda",
+          Parametros: "",
+          Estado: 0,
+        });
       }
     };
 

@@ -28,6 +28,8 @@ import axios from "axios";
 import Avatars from "../billing/data/Avatars";
 
 function Billing() {
+  const user = JSON.parse(localStorage.getItem("users"));
+  const { acr, email, family_name } = user;
   const { columns } = authorsTableData();
   const [rows, setRows] = useState([]);
   const [steps, setSteps] = useState([
@@ -139,8 +141,26 @@ function Billing() {
           ),
         }));
       setRows(newRows);
+
+      // Logging request
+      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+        Usuario: `${family_name} / ${email} / ${acr}`,
+        Modulo: "Itinerario",
+        TipoMetodo: "Busqueda",
+        Parametros: JSON.stringify({ polFilter, poeFilter, transporteFilter, modalidadFilter }),
+        Estado: 1,
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
+
+      // Log the error
+      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+        Usuario: `${family_name} / ${email} / ${acr}`, 
+        Modulo: "Itinerario",
+        TipoMetodo: "Busqueda",
+        Parametros: JSON.stringify({ polFilter, poeFilter, transporteFilter, modalidadFilter }),
+        Estado: 0,
+      });
     }
   };
 

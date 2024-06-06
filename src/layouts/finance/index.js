@@ -25,7 +25,7 @@ function Finance() {
   const [textFilter, setTextFilter] = useState("");
   const [searchResults, setSearchResults] = useState([{}]);
   const user = JSON.parse(localStorage.getItem("users"));
-  const { name, acr } = user;
+  const { name, acr, email, family_name } = user;
   const apiUrl = `https://api.logisticacastrofallas.com/api/CreditoCliente?&code=${name}`;
 
   const handleSearch2 = async () => {
@@ -48,8 +48,26 @@ function Finance() {
       const data = response.data.data;
       const latest = data[data.length - 1]; // Obtener el último registro
       setLatestRecord(latest);
+
+      // Logging request for success
+      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+        Usuario: `${family_name} / ${email} / ${acr}`,
+        Modulo: "My Finance",
+        TipoMetodo: "Busqueda",
+        Parametros: "",
+        Estado: 1,
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
+
+      // Log the error
+      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+        Usuario: `${family_name} / ${email} / ${acr}`,
+        Modulo: "My Finance",
+        TipoMetodo: "Busqueda",
+        Parametros: "",
+        Estado: 0,
+      });
     }
   };
 

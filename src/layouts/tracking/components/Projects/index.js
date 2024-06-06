@@ -28,15 +28,33 @@ const TrackingForm = () => {
   const [searchResults, setSearchResults] = useState([{}]);
   const [timelineData, setTimelineData] = useState([{}]);
   const user = JSON.parse(localStorage.getItem("users"));
-  const name = user ? user.name : "";
+  const { name, email, acr, family_name } = user ? user.name : "";
   const apiUrl = `https://api.logisticacastrofallas.com/api/LoginTracking/${searchOption}?${searchOption}=${searchText}&cliente=${name}`;
 
   const handleSearch = async () => {
     try {
       const response = await axios.get(apiUrl);
       setSearchResults(response.data.data.value || []);
+
+      // Logging request for success
+      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+        Usuario: `${family_name} / ${email} / ${acr}`,
+        Modulo: "Tracking",
+        TipoMetodo: "Busqueda",
+        Parametros: JSON.stringify({ searchOption, searchText }),
+        Estado: 1,
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
+
+      // Log the error
+      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+        Usuario: `${family_name} / ${email} / ${acr}`,
+        Modulo: "Tracking",
+        TipoMetodo: "Busqueda",
+        Parametros: JSON.stringify({ searchOption, searchText }),
+        Estado: 0,
+      });
     }
   };
 
