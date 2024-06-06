@@ -155,7 +155,7 @@ function Billing() {
 
       // Log the error
       await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`, 
+        Usuario: `${family_name} / ${email} / ${acr}`,
         Modulo: "Itinerario",
         TipoMetodo: "Busqueda",
         Parametros: JSON.stringify({ polFilter, poeFilter, transporteFilter, modalidadFilter }),

@@ -175,28 +175,28 @@ function WHS(props) {
           ),
         }));
 
-        setRows(newRows);
+      setRows(newRows);
 
-        // Logging request for success
-        await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-          Usuario: `${family_name} / ${email} / ${acr}`,
-          Modulo: "WHS",
-          TipoMetodo: "Busqueda",
-          Parametros: JSON.stringify({ pol, textFilter }),
-          Estado: 1,
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
-  
-        // Log the error
-        await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-          Usuario: `${family_name} / ${email} / ${acr}`,
-          Modulo: "WHS",
-          TipoMetodo: "Busqueda",
-          Parametros: JSON.stringify({ pol, textFilter }),
-          Estado: 0,
-        });
-      }
+      // Logging request for success
+      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+        Usuario: `${family_name} / ${email} / ${acr}`,
+        Modulo: "WHS",
+        TipoMetodo: "Busqueda",
+        Parametros: JSON.stringify({ pol, textFilter }),
+        Estado: 1,
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+
+      // Log the error
+      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
+        Usuario: `${family_name} / ${email} / ${acr}`,
+        Modulo: "WHS",
+        TipoMetodo: "Busqueda",
+        Parametros: JSON.stringify({ pol, textFilter }),
+        Estado: 0,
+      });
+    }
   };
 
   const handleDownloadExcel = () => {

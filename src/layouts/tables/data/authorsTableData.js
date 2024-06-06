@@ -43,7 +43,7 @@ export default function MyComponent() {
         });
       } catch (error) {
         console.error("Error fetching data:", error);
-  
+
         // Log the error
         await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
           Usuario: `${family_name} / ${email} / ${acr}`,
