@@ -28,7 +28,7 @@ const TrackingForm = () => {
   const [searchResults, setSearchResults] = useState([{}]);
   const [timelineData, setTimelineData] = useState([{}]);
   const user = JSON.parse(localStorage.getItem("users"));
-  const { name, email, acr, family_name } = user ? user.name : "";
+  const { name, acr, email, family_name } = user;
   const apiUrl = `https://api.logisticacastrofallas.com/api/LoginTracking/${searchOption}?${searchOption}=${searchText}&cliente=${name}`;
 
   const handleSearch = async () => {
