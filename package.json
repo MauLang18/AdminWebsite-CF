@@ -40,6 +40,7 @@
     "schema-utils": "^4.2.0",
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1",
+    "uuid": "^10.0.0",
     "yup": "1.1.1"
   },
   "scripts": {

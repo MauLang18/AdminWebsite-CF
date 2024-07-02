@@ -22,34 +22,58 @@ import authorsTableData from "layouts/whs/data/authorsTableData";
 import axios from "axios";
 import Avatars from "../whs/data/Avatars";
 
-import usa from "layouts/whs/data/img/usa.png";
-import panama from "layouts/whs/data/img/panama.png";
-import crc from "layouts/whs/data/img/crc.png";
-import china from "layouts/whs/data/img/china.png";
-import guatemala from "layouts/whs/data/img/guatemala.png";
-import honduras from "layouts/whs/data/img/honduras.png";
-
 function WHS(props) {
   const { pol } = props;
   const { columns } = authorsTableData(pol);
   const [rows, setRows] = useState([]);
   const [numFilter, setNumFilter] = useState(0); // Valor inicial del combobox
   const [textFilter, setTextFilter] = useState(""); // Valor inicial del campo de texto
-  const country = pol.split(", ")[1].toLowerCase();
-  const countryFlags = {
-    usa,
-    panama,
-    crc,
-    china,
-    guatemala,
-    honduras,
-  };
+  const [countryImage, setCountryImage] = useState(null); // Estado para almacenar la imagen del país
   const user = JSON.parse(localStorage.getItem("users"));
   const { name, acr, family_name, email } = user;
 
   const handleTextFilterChange = (event) => {
     setTextFilter(event.target.value);
   };
+
+  useEffect(() => {
+    // Función para obtener la imagen del país desde la API local
+    const fetchCountryImage = async () => {
+      try {
+        const response = await axios.get("https://api.logisticacastrofallas.com/api/Origen/Select");  // URL dinámica
+        const responseData = response.data;  // Deserializar los datos aquí
+
+        if (responseData.isSuccess) {
+          const data = responseData.data;  // Obtener directamente la propiedad 'data'
+
+          // Asegurarse de que 'data' sea un arreglo y tenga al menos un elemento
+          if (Array.isArray(data) && data.length > 0) {
+            const countryData = data.find(
+              (item) => item.description && item.description.toLowerCase() === pol.split(", ")[1].toLowerCase()
+            );
+            if (countryData) {
+              console.log(countryData.description); // Verificar la descripción del país
+              setCountryImage(countryData.id); // Guardar la URL de la imagen encontrada
+            } else {
+              console.warn(`No se encontró la imagen para ${pol.split(", ")[1].toLowerCase()}`);
+              setCountryImage(null); // No mostrar ninguna imagen si no se encuentra ninguna válida
+            }
+          } else {
+            console.warn("La respuesta no contiene datos válidos.");
+            setCountryImage(null); // No mostrar ninguna imagen si no hay datos válidos
+          }
+        } else {
+          console.error("Error en la respuesta de la API:", responseData.message);
+          setCountryImage(null); // No mostrar ninguna imagen en caso de error en la respuesta
+        }
+      } catch (error) {
+        console.error("Error fetching country image:", error);
+        setCountryImage(null); // No mostrar ninguna imagen en caso de error al obtener la imagen
+      }
+    };
+  
+    fetchCountryImage();
+  }, [pol]);
 
   const formatDateTime = (dateTimeString) => {
     if (!dateTimeString || dateTimeString.trim() === "") {
@@ -79,7 +103,6 @@ function WHS(props) {
       }
 
       const response = await axios.get(url);
-      console.log(response.data.data);
       const newRows = response.data.data
         .filter((rowData) => rowData.estado === 1) // Filtrar los elementos con estado igual a 1
         .map((rowData) => ({
@@ -150,14 +173,14 @@ function WHS(props) {
           ),
           whsReceipt: (
             <MDTypography variant="caption" color="text" fontWeight="medium">
-              <a target="blank" href={rowData.whsReceipt}>
+              <a target="_blank" rel="noopener noreferrer" href={rowData.whsReceipt}>
                 WHS Receipt
               </a>
             </MDTypography>
           ),
           documentoregistro: (
             <MDTypography variant="caption" color="text" fontWeight="medium">
-              <a target="blank" href={rowData.documentoregistro}>
+              <a target="_blank" rel="noopener noreferrer" href={rowData.documentoregistro}>
                 Documentación Registro
               </a>
             </MDTypography>
@@ -258,11 +281,13 @@ function WHS(props) {
                 flexWrap="wrap" // Añadir flexWrap para que los elementos se envuelvan en dispositivos móviles
               >
                 <MDTypography variant="h6" color="white">
-                  <img
-                    src={countryFlags[pol.split(", ")[1].toLowerCase()]}
-                    alt={`${country} flag`}
-                    style={{ width: "30px", height: "auto", marginRight: "10px" }}
-                  />
+                  {countryImage && (
+                    <img
+                      src={countryImage}
+                      alt={`${pol.split(", ")[1]} flag`}
+                      style={{ width: "30px", height: "auto", marginRight: "10px" }}
+                    />
+                  )}
                   {pol}
                 </MDTypography>
                 <div style={{ display: "flex", alignItems: "center" }}>
