@@ -4,6 +4,8 @@ import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Modal from "@mui/material/Modal";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -20,10 +22,11 @@ import divisaMapping from "layouts/finance/data/divisa.json";
 import axios from "axios";
 
 function Finance() {
-  // const { columns } = authorsTableData();
   const [latestRecord, setLatestRecord] = useState(null);
   const [textFilter, setTextFilter] = useState("");
   const [searchResults, setSearchResults] = useState([{}]);
+  const [facturaData, setFacturaData] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem("users"));
   const { name, acr, email, family_name } = user;
   const apiUrl = `https://api.logisticacastrofallas.com/api/CreditoCliente?&code=${name}`;
@@ -164,6 +167,17 @@ function Finance() {
     return divisaMapping[divisa] || "";
   };
 
+  const handleFacturaSearch = async () => {
+    try {
+      const url = `https://api.logisticacastrofallas.com/api/FacturaLogin/Factura?factura=${textFilter}&cliente=${name}`;
+      const response = await axios.get(url);
+      setFacturaData(response.data.data.value || []);
+      setModalOpen(true);
+    } catch (error) {
+      console.error("Error fetching factura data:", error);
+    }
+  };
+
   useEffect(() => {
     handleSearch();
     handleSearch2();
@@ -195,6 +209,23 @@ function Finance() {
                     MY FINANCE: {acr}
                   </MDTypography>
                 </div>
+              </MDBox>
+              <MDBox pt={3} px={2} width="100%">
+                <TextField
+                  label="Buscar Factura"
+                  variant="outlined"
+                  fullWidth
+                  value={textFilter}
+                  onChange={handleTextFilterChange}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleFacturaSearch}
+                  sx={{ mt: 2 }}
+                >
+                  Buscar
+                </Button>
               </MDBox>
               <MDBox pt={3} px={2}>
                 {latestRecord && (
@@ -276,6 +307,36 @@ function Finance() {
         </Grid>
       </MDBox>
       <Footer />
+
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography variant="h6" component="h2">
+            Detalles de la Factura
+          </Typography>
+          {facturaData &&
+            facturaData.map((factura, index) => (
+              <Box key={index} sx={{ mt: 2 }}>
+                <hr/>
+                <Typography>Title: {factura.title}</Typography>
+                <Typography>Contenedor: {factura.new_contenedor}</Typography>
+                <Typography>Shipper: {factura._new_shipper_value}</Typography>
+                <Typography>Commodity: {factura.new_commodity}</Typography>
+              </Box>
+            ))}
+        </Box>
+      </Modal>
     </DashboardLayout>
   );
 }

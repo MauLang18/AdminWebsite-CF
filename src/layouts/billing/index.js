@@ -40,6 +40,8 @@ function Billing() {
   ]);
   const [activeStep, setActiveStep] = useState(0);
   const [secondSelectOptions, setSecondSelectOptions] = useState([]);
+  const [polOptions, setPolOptions] = useState([]);
+  const [podOptions, setPodOptions] = useState([]);
 
   const handleSelectChange = (value) => {
     const newSteps = [...steps];
@@ -164,6 +166,24 @@ function Billing() {
     }
   };
 
+  const fetchPolPodOptions = async () => {
+    try {
+      const response = await axios.get("https://api.logisticacastrofallas.com/api/Pol/Select");
+      const options = response.data.data.map((option) => ({
+        value: option.id,
+        label: option.description,
+      }));
+      setPolOptions(options);
+      setPodOptions(options);
+    } catch (error) {
+      console.error("Error fetching POL/POD options:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPolPodOptions();
+  }, []);
+
   useEffect(() => {
     handleSearch();
   }, [steps]);
@@ -171,43 +191,10 @@ function Billing() {
   useEffect(() => {
     switch (activeStep) {
       case 0:
-        setSecondSelectOptions([
-          "Ningbo, China",
-          "Shanghai, China",
-          "Qingdao, China",
-          "Xiamen, China",
-          "Yantian, China",
-          "Guangzhou, China",
-          "Miami, USA",
-          "SJO, CRC",
-          "PVG, China",
-          "NKG, China",
-          "PEK, China",
-          "CFZ, Panama",
-          "Ciudad Hidalgo, MX",
-          "Ciudad de Guatemala, Guatemala",
-          "Managua, Nicaragua",
-          "San Pedro Sula, Honduras",
-          "San Salvador, El Salvador",
-          "Puerto Moin, CRC",
-          "Puerto Caldera, CRC",
-        ]);
+        setSecondSelectOptions(polOptions.map((option) => option.label));
         break;
       case 1:
-        setSecondSelectOptions([
-          "CFZ, Panama",
-          "SJO, CRC",
-          "Ciudad Guatemala, Guatemala",
-          "San Pedro Sula, Honduras",
-          "San Salvador, El Salvador",
-          "Managua, Nicaragua",
-          "Newark (New Jersey), USA",
-          "Los Angeles (California), USA",
-          "Port Everglades (Florida), USA",
-          "Savannah (Georgia), USA",
-          "Wilmington (North Carolina), USA",
-          "Houston (Texas), USA",
-        ]);
+        setSecondSelectOptions(podOptions.map((option) => option.label));
         break;
       case 2:
         setSecondSelectOptions(["Aereo", "Maritimo", "Terrestre"]);
@@ -218,7 +205,7 @@ function Billing() {
       default:
         setSecondSelectOptions([]);
     }
-  }, [activeStep]);
+  }, [activeStep, polOptions, podOptions]);
 
   return (
     <DashboardLayout>
@@ -257,54 +244,54 @@ function Billing() {
                           <Select
                             value={step.state}
                             onChange={(e) => handleSelectChange(e.target.value)}
-                            variant="standard"
-                            size="medium"
-                            className="mb-2 md:mb-0 md:mr-2 w-full md:w-auto"
+                            displayEmpty
                           >
-                            {secondSelectOptions.map((option, i) => (
-                              <MenuItem key={i} value={option}>
+                            <MenuItem value="">Seleccione una opción</MenuItem>
+                            {secondSelectOptions.map((option) => (
+                              <MenuItem key={option} value={option}>
                                 {option}
                               </MenuItem>
                             ))}
                           </Select>
-                          <Box sx={{ mt: 2 }}>
-                            <Button
-                              variant="contained"
-                              color="white"
-                              size="medium"
-                              onClick={handleNext}
-                              style={{
-                                display: activeStep === steps.length - 1 ? "none" : "inline-block",
-                              }}
-                              sx={{ ml: 2, backgroundColor: "black" }}
-                            >
-                              Siguiente
-                            </Button>
-                          </Box>
                         </StepContent>
                       </Step>
                     ))}
                   </Stepper>
-                  <Box sx={{ mt: 2 }}>
+                  <Box mt={2}>
                     <Button
                       variant="contained"
-                      color="white"
-                      size="medium"
-                      onClick={handleResetFilters}
-                      sx={{ ml: 2, backgroundColor: "black" }}
+                      color="primary"
+                      onClick={handleNext}
+                      disabled={activeStep === steps.length - 1}
+                      startIcon={<SearchIcon />}
                     >
-                      Reiniciar filtros
+                      {activeStep === steps.length - 1 ? "Buscar" : "Siguiente"}
                     </Button>
                   </Box>
+                  <Button onClick={handleResetFilters} sx={{ mt: 1, mr: 1 }}>
+                    Limpiar filtros
+                  </Button>
                 </Box>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
+                  table={{
+                    columns: [
+                      { Header: "Origen", accessor: "origen", align: "center" },
+                      { Header: "POL", accessor: "pol", align: "center" },
+                      { Header: "Destino", accessor: "destino", align: "center" },
+                      { Header: "POD", accessor: "pod", align: "center" },
+                      { Header: "Closing", accessor: "closing", align: "center" },
+                      { Header: "ETD", accessor: "etd", align: "center" },
+                      { Header: "ETA", accessor: "eta", align: "center" },
+                      { Header: "Carrier", accessor: "carrier", align: "center" },
+                      { Header: "Vessel", accessor: "vessel", align: "center" },
+                      { Header: "Voyage", accessor: "voyage", align: "center" },
+                      { Header: "Transporte", accessor: "transporte", align: "center" },
+                      { Header: "Modalidad", accessor: "modalidad", align: "center" },
+                    ],
+                    rows,
+                  }}
                 />
               </MDBox>
             </Card>

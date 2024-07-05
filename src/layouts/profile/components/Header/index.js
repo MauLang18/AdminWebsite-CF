@@ -28,6 +28,9 @@ function Header({ children }) {
   const acr = user ? user.acr : "";
   const gender = user ? user.gender : "";
   const email = user ? user.email : "";
+  const nonce = user ? user.nonce : "";
+  const azp = user ? user.azp : "";
+  const prn = user ? user.prn : "";
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -100,6 +103,23 @@ function Header({ children }) {
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
                 {given_name === "1" ? "Admin" : "Usuario"}
+              </MDTypography>
+            </MDBox>
+          </Grid>
+          <Grid item>
+            <MDBox height="100%" mt={0.5} lineHeight={1}>
+              <MDTypography variant="h5" fontWeight="medium">
+                {nonce === "" ? "" : nonce}
+              </MDTypography>
+              <MDTypography variant="button" color="text" fontWeight="regular">
+                {prn}
+              </MDTypography>
+            </MDBox>
+          </Grid>
+          <Grid item>
+            <MDBox height="100%" mt={0.5} lineHeight={1}>
+              <MDTypography variant="h5" fontWeight="medium">
+                {azp === "" ? "" : azp}
               </MDTypography>
             </MDBox>
           </Grid>

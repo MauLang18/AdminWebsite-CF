@@ -6,6 +6,7 @@ import Select from "@mui/material/Select";
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/CloudDownloadTwoTone";
+import InventoryIcon from "@mui/icons-material/Inventory";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -71,7 +72,7 @@ function WHS(props) {
         setCountryImage(null); // No mostrar ninguna imagen en caso de error al obtener la imagen
       }
     };
-  
+
     fetchCountryImage();
   }, [pol]);
 
@@ -255,6 +256,35 @@ function WHS(props) {
       });
   };
 
+  const handleDownloadInventoryControl = async () => {
+    try {
+      const url = `https://api.logisticacastrofallas.com/api/ControlInventario/Cliente?cliente=ef898622-b6d1-ea11-a812-000d3a334ee9&whs=Miami%2C%20USA`;
+
+      const response = await axios.get(url);
+      const controlInventarioUrl = response.data.data[0]?.controlInventario;
+
+      if (controlInventarioUrl) {
+        const inventoryResponse = await axios.get(controlInventarioUrl, { responseType: "blob" });
+        const blob = new Blob([inventoryResponse.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        const filename = "control_inventario.xlsx";
+        if (window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(blob, filename);
+        } else {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        }
+      }
+    } catch (error) {
+      console.error("Error al descargar el control de inventario:", error);
+    }
+  };
+
   useEffect(() => {
     handleSearch();
   }, [pol, textFilter]);
@@ -314,16 +344,29 @@ function WHS(props) {
                   </Select>
                 </div>
 
-                <Button
-                  variant="contained"
-                  color="white"
-                  size="medium"
-                  startIcon={<SearchIcon />}
-                  onClick={handleDownloadExcel}
-                  sx={{ ml: 2, backgroundColor: "black" }}
-                >
-                  Descargar Excel
-                </Button>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Button
+                    variant="contained"
+                    color="white"
+                    size="medium"
+                    startIcon={<SearchIcon />}
+                    onClick={handleDownloadExcel}
+                    sx={{ ml: 2, backgroundColor: "black" }}
+                  >
+                    Descargar Excel
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    color="white"
+                    size="medium"
+                    startIcon={<InventoryIcon />}
+                    onClick={handleDownloadInventoryControl}
+                    sx={{ ml: 2, backgroundColor: "black" }}
+                  >
+                    Descargar Control de Inventario
+                  </Button>
+                </div>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
