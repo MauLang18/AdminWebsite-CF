@@ -215,27 +215,27 @@ function Billing() {
                   onChange={handleTransportChange}
                 >
                   <FormControlLabel
-                    value="transporte maritimo LCL"
+                    value="maritimo LCL"
                     control={<Radio />}
                     label="Ocean LCL"
                   />
                   <FormControlLabel
-                    value="transporte maritimo FCL"
+                    value="maritimo FCL"
                     control={<Radio />}
                     label="Ocean FCL"
                   />
                   <FormControlLabel
-                    value="transporte aereo LCL"
+                    value="aereo LCL"
                     control={<Radio />}
                     label="Air Freight"
                   />
                   <FormControlLabel
-                    value="transporte terrestre FCL"
+                    value="terrestre FCL"
                     control={<Radio />}
                     label="Ground FCL"
                   />
                   <FormControlLabel
-                    value="transporte terrestre FTL"
+                    value="terrestre FTL"
                     control={<Radio />}
                     label="Ground FTL"
                   />
@@ -282,19 +282,6 @@ function Billing() {
                   sx={{ mt: 3 }}
                 >
                   Buscar
-                </Button>
-                <Button
-                  variant="contained"
-                  color="black"
-                  onClick={() => {
-                    setTransportMode("");
-                    setModalidad("");
-                    setPol("");
-                    setPod("");
-                  }}
-                  sx={{ mt: 1, mr: 1 }}
-                >
-                  Limpiar filtros
                 </Button>
               </MDBox>
               <MDBox pt={3}>
