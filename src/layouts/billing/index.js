@@ -2,15 +2,13 @@ import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
-import SearchIcon from "@mui/icons-material/Search";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import StepContent from "@mui/material/StepContent";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Autocomplete from "@mui/material/Autocomplete";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import SearchIcon from "@mui/icons-material/Search";
+import axios from "axios";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -24,7 +22,6 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import authorsTableData from "layouts/billing/data/authorsTableData";
-import axios from "axios";
 import Avatars from "../billing/data/Avatars";
 
 function Billing() {
@@ -32,53 +29,32 @@ function Billing() {
   const { acr, email, family_name } = user;
   const { columns } = authorsTableData();
   const [rows, setRows] = useState([]);
-  const [steps, setSteps] = useState([
-    { label: "POL", state: "" },
-    { label: "POD", state: "" },
-    { label: "Transporte", state: "" },
-    { label: "Modalidad", state: "" },
-  ]);
-  const [activeStep, setActiveStep] = useState(0);
-  const [secondSelectOptions, setSecondSelectOptions] = useState([]);
+  const [transportMode, setTransportMode] = useState("");
+  const [modalidad, setModalidad] = useState("");
+  const [pol, setPol] = useState("");
+  const [pod, setPod] = useState("");
   const [polOptions, setPolOptions] = useState([]);
   const [podOptions, setPodOptions] = useState([]);
 
-  const handleSelectChange = (value) => {
-    const newSteps = [...steps];
-    newSteps[activeStep].state = value;
-    setSteps(newSteps);
+  const handleTransportChange = (event) => {
+    const selectedTransport = event.target.value;
+    const [transporte, mod] = selectedTransport.split(" ");
+    setTransportMode(transporte);
+    setModalidad(mod);
   };
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  const handlePolChange = (event, value) => {
+    setPol(value);
   };
 
-  const handleResetFilters = () => {
-    setSteps([
-      { label: "POL", state: "" },
-      { label: "POD", state: "" },
-      { label: "Transporte", state: "" },
-      { label: "Modalidad", state: "" },
-    ]);
-    setActiveStep(0);
-  };
-
-  const formatDate = (dateString) => {
-    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-    return dateString
-      ? new Date(dateString).toLocaleDateString("es-ES", options)
-      : "";
+  const handlePodChange = (event, value) => {
+    setPod(value);
   };
 
   const handleSearch = async () => {
     try {
-      const polFilter = steps[0].state;
-      const poeFilter = steps[1].state;
-      const transporteFilter = steps[2].state;
-      const modalidadFilter = steps[3].state;
-
       const response = await axios.get(
-        `https://api.logisticacastrofallas.com/api/Itinerario?polFilter=${polFilter}&poeFilter=${poeFilter}&transporteFilter=${transporteFilter}&modalidadFilter=${modalidadFilter}`
+        `https://api.logisticacastrofallas.com/api/Itinerario?polFilter=${pol}&poeFilter=${pod}&transporteFilter=${transportMode}&modalidadFilter=${modalidad}`
       );
       const newRows = response.data.data
         .filter((rowData) => rowData.estado === 1)
@@ -160,10 +136,10 @@ function Billing() {
           Modulo: "Itinerario",
           TipoMetodo: "Busqueda",
           Parametros: JSON.stringify({
-            polFilter,
-            poeFilter,
-            transporteFilter,
-            modalidadFilter,
+            pol,
+            pod,
+            transportMode,
+            modalidad,
           }),
           Estado: 1,
         }
@@ -179,10 +155,10 @@ function Billing() {
           Modulo: "Itinerario",
           TipoMetodo: "Busqueda",
           Parametros: JSON.stringify({
-            polFilter,
-            poeFilter,
-            transporteFilter,
-            modalidadFilter,
+            pol,
+            pod,
+            transportMode,
+            modalidad,
           }),
           Estado: 0,
         }
@@ -195,10 +171,7 @@ function Billing() {
       const response = await axios.get(
         "https://api.logisticacastrofallas.com/api/Pol/Select"
       );
-      const options = response.data.data.map((option) => ({
-        value: option.id,
-        label: option.description,
-      }));
+      const options = response.data.data.map((option) => option.description);
       setPolOptions(options);
       setPodOptions(options);
     } catch (error) {
@@ -209,29 +182,6 @@ function Billing() {
   useEffect(() => {
     fetchPolPodOptions();
   }, []);
-
-  useEffect(() => {
-    handleSearch();
-  }, [steps]);
-
-  useEffect(() => {
-    switch (activeStep) {
-      case 0:
-        setSecondSelectOptions(polOptions.map((option) => option.label));
-        break;
-      case 1:
-        setSecondSelectOptions(podOptions.map((option) => option.label));
-        break;
-      case 2:
-        setSecondSelectOptions(["Aereo", "Maritimo", "Terrestre"]);
-        break;
-      case 3:
-        setSecondSelectOptions(["LCL", "LTL", "FCL", "FTL", "Multimodal"]);
-        break;
-      default:
-        setSecondSelectOptions([]);
-    }
-  }, [activeStep, polOptions, podOptions]);
 
   return (
     <DashboardLayout>
@@ -257,72 +207,95 @@ function Billing() {
                 <MDTypography variant="h6" color="white">
                   Itinerarios
                 </MDTypography>
-                <Box
-                  width="100%"
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
+              </MDBox>
+              <MDBox pt={3} px={3}>
+                <RadioGroup
+                  row
+                  value={`${transportMode} ${modalidad}`}
+                  onChange={handleTransportChange}
                 >
-                  <Stepper
-                    activeStep={activeStep}
-                    orientation="horizontal"
-                    style={{ width: "100%" }}
-                  >
-                    {steps.map((step, index) => (
-                      <Step key={index}>
-                        <StepLabel>{step.label}</StepLabel>
-                        <StepContent>
-                          <Autocomplete
-                            value={step.state}
-                            onChange={(e, newValue) =>
-                              handleSelectChange(newValue)
-                            }
-                            options={secondSelectOptions}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label={`Selecciona ${step.label}`}
-                                variant="outlined"
-                                fullWidth
-                              />
-                            )}
-                          />
-                          <Box sx={{ mb: 2 }}>
-                            <div>
-                              <Button
-                                variant="contained"
-                                color="black"
-                                onClick={handleNext}
-                                sx={{ mt: 1, mr: 1 }}
-                              >
-                                {index === steps.length - 1
-                                  ? "Finalizar"
-                                  : "Siguiente"}
-                              </Button>
-                            </div>
-                          </Box>
-                        </StepContent>
-                      </Step>
-                    ))}
-                  </Stepper>
-                  <Button
-                    variant="contained"
-                    color="black"
-                    onClick={handleSearch}
-                    startIcon={<SearchIcon />}
-                    sx={{ mt: 3 }}
-                  >
-                    Buscar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="black"
-                    onClick={handleResetFilters}
-                    sx={{ mt: 1, mr: 1 }}
-                  >
-                    Limpiar filtros
-                  </Button>
-                </Box>
+                  <FormControlLabel
+                    value="transporte maritimo LCL"
+                    control={<Radio />}
+                    label="Ocean LCL"
+                  />
+                  <FormControlLabel
+                    value="transporte maritimo FCL"
+                    control={<Radio />}
+                    label="Ocean FCL"
+                  />
+                  <FormControlLabel
+                    value="transporte aereo LCL"
+                    control={<Radio />}
+                    label="Air Freight"
+                  />
+                  <FormControlLabel
+                    value="transporte terrestre FCL"
+                    control={<Radio />}
+                    label="Ground FCL"
+                  />
+                  <FormControlLabel
+                    value="transporte terrestre FTL"
+                    control={<Radio />}
+                    label="Ground FTL"
+                  />
+                </RadioGroup>
+                <Grid container spacing={2} sx={{ mt: 2 }}>
+                  <Grid item xs={6}>
+                    <Autocomplete
+                      options={polOptions}
+                      getOptionLabel={(option) => option}
+                      onChange={handlePolChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="POL"
+                          variant="outlined"
+                          fullWidth
+                          sx={{ color: "black" }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Autocomplete
+                      options={podOptions}
+                      getOptionLabel={(option) => option}
+                      onChange={handlePodChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="POD"
+                          variant="outlined"
+                          fullWidth
+                          sx={{ color: "black" }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  variant="contained"
+                  color="black"
+                  onClick={handleSearch}
+                  startIcon={<SearchIcon />}
+                  sx={{ mt: 3 }}
+                >
+                  Buscar
+                </Button>
+                <Button
+                  variant="contained"
+                  color="black"
+                  onClick={() => {
+                    setTransportMode("");
+                    setModalidad("");
+                    setPol("");
+                    setPod("");
+                  }}
+                  sx={{ mt: 1, mr: 1 }}
+                >
+                  Limpiar filtros
+                </Button>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
@@ -343,3 +316,9 @@ function Billing() {
 }
 
 export default Billing;
+
+function formatDate(dateString) {
+  const options = { year: "numeric", month: "numeric", day: "numeric" };
+  const date = new Date(dateString);
+  return date.toLocaleDateString("es-ES", options);
+}

@@ -329,10 +329,10 @@ function Finance() {
             facturaData.map((factura, index) => (
               <Box key={index} sx={{ mt: 2 }}>
                 <hr/>
-                <Typography>Title: {factura.title}</Typography>
-                <Typography>Contenedor: {factura.new_contenedor}</Typography>
-                <Typography>Shipper: {factura._new_shipper_value}</Typography>
-                <Typography>Commodity: {factura.new_commodity}</Typography>
+                <Typography><br>IDTRA: </br>{factura.title}</Typography>
+                <Typography><br>Contenedor: </br>{factura.new_contenedor}</Typography>
+                <Typography><br>Shipper: </br>{factura._new_shipper_value}</Typography>
+                <Typography><br>Commodity: </br>{factura.new_commodity}</Typography>
               </Box>
             ))}
         </Box>
