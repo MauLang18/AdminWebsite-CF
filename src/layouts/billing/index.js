@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
 import Stepper from "@mui/material/Stepper";
@@ -11,6 +9,8 @@ import StepLabel from "@mui/material/StepLabel";
 import StepContent from "@mui/material/StepContent";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -65,7 +65,9 @@ function Billing() {
 
   const formatDate = (dateString) => {
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-    return dateString ? new Date(dateString).toLocaleDateString("es-ES", options) : "";
+    return dateString
+      ? new Date(dateString).toLocaleDateString("es-ES", options)
+      : "";
   };
 
   const handleSearch = async () => {
@@ -83,7 +85,10 @@ function Billing() {
         .map((rowData) => ({
           origen: (
             <Avatars
-              members={[rowData.origen].map((image, index) => [image, `Image ${index + 1}`])}
+              members={[rowData.origen].map((image, index) => [
+                image,
+                `Image ${index + 1}`,
+              ])}
             />
           ),
           pol: (
@@ -93,7 +98,10 @@ function Billing() {
           ),
           destino: (
             <Avatars
-              members={[rowData.destino].map((image, index) => [image, `Image ${index + 1}`])}
+              members={[rowData.destino].map((image, index) => [
+                image,
+                `Image ${index + 1}`,
+              ])}
             />
           ),
           pod: (
@@ -145,30 +153,48 @@ function Billing() {
       setRows(newRows);
 
       // Logging request
-      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`,
-        Modulo: "Itinerario",
-        TipoMetodo: "Busqueda",
-        Parametros: JSON.stringify({ polFilter, poeFilter, transporteFilter, modalidadFilter }),
-        Estado: 1,
-      });
+      await axios.post(
+        "https://api.logisticacastrofallas.com/api/Logs/Register",
+        {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "Itinerario",
+          TipoMetodo: "Busqueda",
+          Parametros: JSON.stringify({
+            polFilter,
+            poeFilter,
+            transporteFilter,
+            modalidadFilter,
+          }),
+          Estado: 1,
+        }
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
 
       // Log the error
-      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`,
-        Modulo: "Itinerario",
-        TipoMetodo: "Busqueda",
-        Parametros: JSON.stringify({ polFilter, poeFilter, transporteFilter, modalidadFilter }),
-        Estado: 0,
-      });
+      await axios.post(
+        "https://api.logisticacastrofallas.com/api/Logs/Register",
+        {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "Itinerario",
+          TipoMetodo: "Busqueda",
+          Parametros: JSON.stringify({
+            polFilter,
+            poeFilter,
+            transporteFilter,
+            modalidadFilter,
+          }),
+          Estado: 0,
+        }
+      );
     }
   };
 
   const fetchPolPodOptions = async () => {
     try {
-      const response = await axios.get("https://api.logisticacastrofallas.com/api/Pol/Select");
+      const response = await axios.get(
+        "https://api.logisticacastrofallas.com/api/Pol/Select"
+      );
       const options = response.data.data.map((option) => ({
         value: option.id,
         label: option.description,
@@ -231,7 +257,12 @@ function Billing() {
                 <MDTypography variant="h6" color="white">
                   Itinerarios
                 </MDTypography>
-                <Box width="100%" display="flex" flexDirection="column" alignItems="center">
+                <Box
+                  width="100%"
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                >
                   <Stepper
                     activeStep={activeStep}
                     orientation="horizontal"
@@ -241,57 +272,65 @@ function Billing() {
                       <Step key={index}>
                         <StepLabel>{step.label}</StepLabel>
                         <StepContent>
-                          <Select
+                          <Autocomplete
                             value={step.state}
-                            onChange={(e) => handleSelectChange(e.target.value)}
-                            displayEmpty
-                          >
-                            <MenuItem value="">Seleccione una opción</MenuItem>
-                            {secondSelectOptions.map((option) => (
-                              <MenuItem key={option} value={option}>
-                                {option}
-                              </MenuItem>
-                            ))}
-                          </Select>
+                            onChange={(e, newValue) =>
+                              handleSelectChange(newValue)
+                            }
+                            options={secondSelectOptions}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label={`Selecciona ${step.label}`}
+                                variant="outlined"
+                                fullWidth
+                              />
+                            )}
+                          />
+                          <Box sx={{ mb: 2 }}>
+                            <div>
+                              <Button
+                                variant="contained"
+                                color="black"
+                                onClick={handleNext}
+                                sx={{ mt: 1, mr: 1 }}
+                              >
+                                {index === steps.length - 1
+                                  ? "Finalizar"
+                                  : "Siguiente"}
+                              </Button>
+                            </div>
+                          </Box>
                         </StepContent>
                       </Step>
                     ))}
                   </Stepper>
-                  <Box mt={2}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      disabled={activeStep === steps.length - 1}
-                      startIcon={<SearchIcon />}
-                    >
-                      {activeStep === steps.length - 1 ? "Buscar" : "Siguiente"}
-                    </Button>
-                  </Box>
-                  <Button onClick={handleResetFilters} sx={{ mt: 1, mr: 1 }}>
+                  <Button
+                    variant="contained"
+                    color="black"
+                    onClick={handleSearch}
+                    startIcon={<SearchIcon />}
+                    sx={{ mt: 3 }}
+                  >
+                    Buscar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="black"
+                    onClick={handleResetFilters}
+                    sx={{ mt: 1, mr: 1 }}
+                  >
                     Limpiar filtros
                   </Button>
                 </Box>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{
-                    columns: [
-                      { Header: "Origen", accessor: "origen", align: "center" },
-                      { Header: "POL", accessor: "pol", align: "center" },
-                      { Header: "Destino", accessor: "destino", align: "center" },
-                      { Header: "POD", accessor: "pod", align: "center" },
-                      { Header: "Closing", accessor: "closing", align: "center" },
-                      { Header: "ETD", accessor: "etd", align: "center" },
-                      { Header: "ETA", accessor: "eta", align: "center" },
-                      { Header: "Carrier", accessor: "carrier", align: "center" },
-                      { Header: "Vessel", accessor: "vessel", align: "center" },
-                      { Header: "Voyage", accessor: "voyage", align: "center" },
-                      { Header: "Transporte", accessor: "transporte", align: "center" },
-                      { Header: "Modalidad", accessor: "modalidad", align: "center" },
-                    ],
-                    rows,
-                  }}
+                  table={{ columns, rows }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
                 />
               </MDBox>
             </Card>

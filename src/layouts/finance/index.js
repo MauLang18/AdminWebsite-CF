@@ -219,8 +219,8 @@ function Finance() {
                   onChange={handleTextFilterChange}
                 />
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant="contained" 
+                  color="black"
                   onClick={handleFacturaSearch}
                   sx={{ mt: 2 }}
                 >

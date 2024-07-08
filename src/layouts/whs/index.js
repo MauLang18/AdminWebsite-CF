@@ -258,7 +258,7 @@ function WHS(props) {
 
   const handleDownloadInventoryControl = async () => {
     try {
-      const url = `https://api.logisticacastrofallas.com/api/ControlInventario/Cliente?cliente=ef898622-b6d1-ea11-a812-000d3a334ee9&whs=Miami%2C%20USA`;
+      const url = `https://api.logisticacastrofallas.com/api/ControlInventario/Cliente?whs=${pol}&cliente=${name}`;
 
       const response = await axios.get(url);
       const controlInventarioUrl = response.data.data[0]?.controlInventario;
