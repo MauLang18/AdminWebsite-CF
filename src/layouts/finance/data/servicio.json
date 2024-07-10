@@ -1,0 +1,15 @@
+{
+  "100000001": "Agencia Aduanas",
+  "100000011": "Almacenaje Carga Fiscal",
+  "100000010": "Almacenaje Carga General",
+  "100000009": "Control de Inventarios",
+  "100000008": "Entrega Carga",
+  "100000003": "Exoneraciones",
+  "100000000": "Flete Internacional (aéreo y/o marítimo y/o terrestre)",
+  "100000005": "Pagador de cargos",
+  "100000004": "Receptor de Carga",
+  "100000007": "Recolección",
+  "100000006": "Redestino/TI/Transitos Internos",
+  "100000012": "Salida Almacen General",
+  "100000002": "Transporte Local"
+}

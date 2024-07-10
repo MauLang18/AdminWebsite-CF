@@ -19,6 +19,7 @@ import clienteMapping from "layouts/finance/data/cliente.json";
 import condicionMapping from "layouts/finance/data/condicion.json";
 import creditoMapping from "layouts/finance/data/credito.json";
 import divisaMapping from "layouts/finance/data/divisa.json";
+import servicioMapping from "layouts/finance/data/servicio.json";
 import axios from "axios";
 
 function Finance() {
@@ -53,24 +54,30 @@ function Finance() {
       setLatestRecord(latest);
 
       // Logging request for success
-      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`,
-        Modulo: "My Finance",
-        TipoMetodo: "Busqueda",
-        Parametros: "",
-        Estado: 1,
-      });
+      await axios.post(
+        "https://api.logisticacastrofallas.com/api/Logs/Register",
+        {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "My Finance",
+          TipoMetodo: "Busqueda",
+          Parametros: "",
+          Estado: 1,
+        }
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
 
       // Log the error
-      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`,
-        Modulo: "My Finance",
-        TipoMetodo: "Busqueda",
-        Parametros: "",
-        Estado: 0,
-      });
+      await axios.post(
+        "https://api.logisticacastrofallas.com/api/Logs/Register",
+        {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "My Finance",
+          TipoMetodo: "Busqueda",
+          Parametros: "",
+          Estado: 0,
+        }
+      );
     }
   };
 
@@ -115,7 +122,10 @@ function Finance() {
     }
 
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-    const formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "es-ES",
+      options
+    );
 
     return formattedDate;
   };
@@ -133,7 +143,10 @@ function Finance() {
       minute: "2-digit",
       second: "2-digit",
     };
-    const formattedDateTime = new Date(dateTimeString).toLocaleString("es-ES", options);
+    const formattedDateTime = new Date(dateTimeString).toLocaleString(
+      "es-ES",
+      options
+    );
 
     return formattedDateTime;
   };
@@ -167,6 +180,10 @@ function Finance() {
     return divisaMapping[divisa] || "";
   };
 
+  const getServicioName = (servicio) => {
+    return servicioMapping[servicio] || "";
+  };
+
   const handleFacturaSearch = async () => {
     try {
       const url = `https://api.logisticacastrofallas.com/api/FacturaLogin/Factura?factura=${textFilter}&cliente=${name}`;
@@ -189,7 +206,13 @@ function Finance() {
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
-            <Card sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Card
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <MDBox
                 mx={2}
                 mt={-3}
@@ -205,7 +228,11 @@ function Finance() {
                 flexWrap="wrap"
               >
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <MDTypography variant="h6" color="white" style={{ marginRight: "10px" }}>
+                  <MDTypography
+                    variant="h6"
+                    color="white"
+                    style={{ marginRight: "10px" }}
+                  >
                     MY FINANCE: {acr}
                   </MDTypography>
                 </div>
@@ -219,7 +246,7 @@ function Finance() {
                   onChange={handleTextFilterChange}
                 />
                 <Button
-                  variant="contained" 
+                  variant="contained"
                   color="black"
                   onClick={handleFacturaSearch}
                   sx={{ mt: 2 }}
@@ -241,7 +268,12 @@ function Finance() {
                   </>
                 )}
                 <MDBox py={2} px={2} display="flex" justifyContent="center">
-                  <Button variant="contained" color="black" onClick={handleSubmit} sx={{ ml: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="black"
+                    onClick={handleSubmit}
+                    sx={{ ml: 2 }}
+                  >
                     Solicitar Actualización
                   </Button>
                 </MDBox>
@@ -249,53 +281,140 @@ function Finance() {
                 {searchResults.map((result, index) => (
                   <Box
                     key={index}
-                    sx={{ display: "grid", gap: 1, mx: "auto", textAlign: "center" }}
+                    sx={{
+                      display: "grid",
+                      gap: 1,
+                      mx: "auto",
+                      textAlign: "center",
+                    }}
                   >
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr 1fr 1fr",
+                        gap: 1,
+                      }}
+                    >
                       <Typography variant="h6">Tipo de cliente:</Typography>
                       <Typography variant="h6">Divisa:</Typography>
                       <Typography variant="h6">Limite de credito:</Typography>
                       <Typography variant="h6">Condiciones de pago:</Typography>
                     </Box>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 1 }}>
-                      <Typography>{getClienteName(result.new_tipodeproveedor)}</Typography>
-                      <Typography>{getDivisaName(result._transactioncurrencyid_value)}</Typography>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr 1fr 1fr",
+                        gap: 1,
+                      }}
+                    >
+                      <Typography>
+                        {getClienteName(result.new_tipodeproveedor)}
+                      </Typography>
+                      <Typography>
+                        {getDivisaName(result._transactioncurrencyid_value)}
+                      </Typography>
                       <Typography>
                         {result.creditlimit != null
                           ? result.creditlimit.toLocaleString()
                           : "Sin datos"}
                       </Typography>
-                      <Typography>{getCondicionName(result.paymenttermscode)}</Typography>
+                      <Typography>
+                        {getCondicionName(result.paymenttermscode)}
+                      </Typography>
                     </Box>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr 1fr",
+                        gap: 1,
+                      }}
+                    >
                       <Typography variant="h6">Dias de credito:</Typography>
-                      <Typography variant="h6">Fecha inicio credito:</Typography>
-                      <Typography variant="h6">Fecha renovacion credito:</Typography>
+                      <Typography variant="h6">
+                        Fecha inicio credito:
+                      </Typography>
+                      <Typography variant="h6">
+                        Fecha renovacion credito:
+                      </Typography>
                     </Box>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr 1fr",
+                        gap: 1,
+                      }}
+                    >
                       <Typography>{result.new_diasdecredito}</Typography>
-                      <Typography>{formatDate(result.new_fechadeiniciodecredito)}</Typography>
-                      <Typography>{formatDate(result.new_fechaderenovaciondecredito)}</Typography>
+                      <Typography>
+                        {formatDate(result.new_fechadeiniciodecredito)}
+                      </Typography>
+                      <Typography>
+                        {formatDate(result.new_fechaderenovaciondecredito)}
+                      </Typography>
                     </Box>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr",
+                        gap: 1,
+                      }}
+                    >
                       <Typography variant="h6">CREDITO INCLUYE:</Typography>
                     </Box>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr",
+                        gap: 1,
+                      }}
+                    >
                       <Typography>{getCreditoName(result.new_3)}</Typography>
                     </Box>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr",
+                        gap: 1,
+                      }}
+                    >
                       <Typography variant="h6">CREDITO NO INCLUYE:</Typography>
                     </Box>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
-                      <Typography>{getCreditoName(result.new_creditonoincluye)}</Typography>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr",
+                        gap: 1,
+                      }}
+                    >
+                      <Typography>
+                        {getCreditoName(result.new_creditonoincluye)}
+                      </Typography>
                     </Box>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
-                      <Typography variant="h6">% FINANCIAMIENTO MENSUAL:</Typography>
-                      <Typography variant="h6">INTERES MORATORIO MENSUAL:</Typography>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: 1,
+                      }}
+                    >
+                      <Typography variant="h6">
+                        % FINANCIAMIENTO MENSUAL:
+                      </Typography>
+                      <Typography variant="h6">
+                        INTERES MORATORIO MENSUAL:
+                      </Typography>
                     </Box>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: 1,
+                      }}
+                    >
                       <Typography>{result.new_financiamiento}</Typography>
-                      <Typography>{result.new_intersmoratoriomensual}</Typography>
+                      <Typography>
+                        {result.new_intersmoratoriomensual}
+                      </Typography>
                     </Box>
                   </Box>
                 ))}
@@ -328,11 +447,27 @@ function Finance() {
           {facturaData &&
             facturaData.map((factura, index) => (
               <Box key={index} sx={{ mt: 2 }}>
-                <hr/>
-                <Typography><br>IDTRA: </br>{factura.title}</Typography>
-                <Typography><br>Contenedor: </br>{factura.new_contenedor}</Typography>
-                <Typography><br>Shipper: </br>{factura._new_shipper_value}</Typography>
-                <Typography><br>Commodity: </br>{factura.new_commodity}</Typography>
+                <hr />
+                <Typography>
+                  <span style={{ fontWeight: "bold" }}>Title:</span>{" "}
+                  {factura.title}
+                </Typography>
+                <Typography>
+                  <span style={{ fontWeight: "bold" }}>Contenedor:</span>{" "}
+                  {factura.new_contenedor}
+                </Typography>
+                <Typography>
+                  <span style={{ fontWeight: "bold" }}>Shipper:</span>{" "}
+                  {factura._new_shipper_value}
+                </Typography>
+                <Typography>
+                  <span style={{ fontWeight: "bold" }}>Commodity:</span>{" "}
+                  {factura.new_commodity}
+                </Typography>
+                <Typography>
+                  <span style={{ fontWeight: "bold" }}>Servicio:</span>{" "}
+                  {getServicioName(factura.new_servicio)}
+                </Typography>
               </Box>
             ))}
         </Box>

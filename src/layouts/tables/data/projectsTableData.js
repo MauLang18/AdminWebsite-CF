@@ -21,7 +21,7 @@ export default function data() {
   const [apiData, setApiData] = useState([]); // Estado para almacenar los datos de la API
 
   const user = JSON.parse(localStorage.getItem("users"));
-  const { name } = user;
+  const { name, acr, email, family_name } = user;
 
   useEffect(() => {
     // Llamada a la API al montar el componente
