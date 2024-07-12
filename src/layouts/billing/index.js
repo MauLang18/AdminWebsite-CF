@@ -230,9 +230,9 @@ function Billing() {
                     label="Air Freight"
                   />
                   <FormControlLabel
-                    value="terrestre FCL"
+                    value="terrestre LTL"
                     control={<Radio />}
-                    label="Ground FCL"
+                    label="Ground LTL"
                   />
                   <FormControlLabel
                     value="terrestre FTL"
