@@ -8,6 +8,7 @@ import Footer from "examples/Footer";
 
 // Overview page components
 import Header from "layouts/profile/components/Header";
+import Carrousel from "layouts/profile/components/PlatformSettings";
 
 function Overview() {
   return (
@@ -15,6 +16,9 @@ function Overview() {
       <DashboardNavbar />
       <MDBox mb={2} />
       <Header></Header>
+      <MDBox mb={2} />
+      <Carrousel />
+      <MDBox mb={2} />
       <Footer />
     </DashboardLayout>
   );
