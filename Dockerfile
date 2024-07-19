@@ -2,7 +2,8 @@
 FROM node:22.3.0 AS dev-deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --force
+RUN npm cache clean --force
+RUN npm i --force
 
 # Etapa de construcción - Compilación de la aplicación
 FROM dev-deps AS builder
