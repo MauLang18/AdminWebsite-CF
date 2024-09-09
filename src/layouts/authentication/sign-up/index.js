@@ -1,28 +1,24 @@
-// react-router-dom components
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
-// @mui material components
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-
-// Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
-
-// Axios for HTTP requests
 import axios from "axios";
-
-// Images
 import bgImage from "assets/images/bg-sign-in-basic.jpg";
 
 function Cover() {
+  const [openModal, setOpenModal] = useState(false);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("hola");
     const data = new FormData(event.currentTarget);
 
     // Obtener los datos del formulario
@@ -50,15 +46,18 @@ function Cover() {
     data.append("estado", "0");
 
     try {
-      const response = await axios.post(
+      await axios.post(
         "https://api.logisticacastrofallas.com/api/Usuario/Register/",
         data
       );
-
-      console.log(response.data);
+      setOpenModal(true); // Abre el modal si la solicitud es exitosa
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
   return (
@@ -149,6 +148,19 @@ function Cover() {
           </MDBox>
         </MDBox>
       </Card>
+
+      {/* Modal de confirmación */}
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogTitle>Registro Exitoso</DialogTitle>
+        <DialogContent>
+          <MDTypography variant="body1">
+            Su cuenta ha sido registrada exitosamente. Pronto recibirá una notificación cuando su cuenta sea activada.
+          </MDTypography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal}>Aceptar</Button>
+        </DialogActions>
+      </Dialog>
     </BasicLayout>
   );
 }
