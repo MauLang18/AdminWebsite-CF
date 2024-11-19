@@ -37,24 +37,30 @@ const TrackingForm = () => {
       setSearchResults(response.data.data.value || []);
 
       // Logging request for success
-      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`,
-        Modulo: "Tracking",
-        TipoMetodo: "Busqueda",
-        Parametros: JSON.stringify({ searchOption, searchText }),
-        Estado: 1,
-      });
+      await axios.post(
+        "https://api.logisticacastrofallas.com/api/Logs/Register",
+        {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "Tracking",
+          TipoMetodo: "Busqueda",
+          Parametros: JSON.stringify({ searchOption, searchText }),
+          Estado: 1,
+        }
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
 
       // Log the error
-      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`,
-        Modulo: "Tracking",
-        TipoMetodo: "Busqueda",
-        Parametros: JSON.stringify({ searchOption, searchText }),
-        Estado: 0,
-      });
+      await axios.post(
+        "https://api.logisticacastrofallas.com/api/Logs/Register",
+        {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "Tracking",
+          TipoMetodo: "Busqueda",
+          Parametros: JSON.stringify({ searchOption, searchText }),
+          Estado: 0,
+        }
+      );
     }
   };
 
@@ -75,7 +81,9 @@ const TrackingForm = () => {
         {
           date: "Confirmación Zarpe",
           label: `BUQUE: ${result.new_barcodesalida || ""}`,
-          description: `ZARPE: ${formatDate(result.new_confirmacinzarpe) || ""}`,
+          description: `ZARPE: ${
+            formatDate(result.new_confirmacinzarpe) || ""
+          }`,
         },
         {
           date: "Notif. Aviso Arribo",
@@ -93,7 +101,9 @@ const TrackingForm = () => {
         },
         {
           date: "Confirmacion de Arribo",
-          label: `OFICIALIZACION: ${formatDateTime(result.new_fechayhoraoficializacion) || ""}`,
+          label: `OFICIALIZACION: ${
+            formatDateTime(result.new_fechayhoraoficializacion) || ""
+          }`,
         },
         {
           date: "ENTREGA",
@@ -117,7 +127,10 @@ const TrackingForm = () => {
     }
 
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-    const formattedDate = new Date(dateString).toLocaleDateString("es-ES", options);
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "es-ES",
+      options
+    );
 
     return formattedDate;
   };
@@ -135,7 +148,10 @@ const TrackingForm = () => {
       minute: "2-digit",
       second: "2-digit",
     };
-    const formattedDateTime = new Date(dateTimeString).toLocaleString("es-ES", options);
+    const formattedDateTime = new Date(dateTimeString).toLocaleString(
+      "es-ES",
+      options
+    );
 
     return formattedDateTime;
   };
@@ -179,6 +195,7 @@ const TrackingForm = () => {
             <MenuItem value="CONTENEDOR">#CONTENEDOR</MenuItem>
             <MenuItem value="BCF">BCF</MenuItem>
             <MenuItem value="PO">PO</MenuItem>
+            <MenuItem value="BOOKING">BOOKING</MenuItem>
           </Select>
         </Box>
 
@@ -206,57 +223,99 @@ const TrackingForm = () => {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {searchResults.map((result, index) => (
             <Box key={index} sx={{ display: "grid", gap: 1 }}>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: 1,
+                }}
+              >
                 <Typography variant="h6">IDTRA:</Typography>
                 <Typography variant="h6">BL:</Typography>
                 <Typography variant="h6">#CONTENEDOR:</Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: 1,
+                }}
+              >
                 <Typography>{result.title}</Typography>
                 <Typography>{result.new_bcf}</Typography>
                 <Typography>{result.new_contenedor}</Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}
+              >
                 <Typography variant="h6">PO:</Typography>
                 <Typography variant="h6">#FACTURA:</Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}
+              >
                 <Typography>{result.new_po}</Typography>
                 <Typography>{result.new_factura}</Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}
+              >
                 <Typography variant="h6">SHIPPER:</Typography>
                 <Typography variant="h6">STATUS:</Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}
+              >
                 <Typography>{result._new_shipper_value}</Typography>
                 <Typography>{getStatusName(result.new_preestado2)}</Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}
+              >
                 <Typography variant="h6">ULTIMO STATUS:</Typography>
                 <Typography variant="h6">FECHA ACTUALIZACION:</Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}
+              >
                 <Typography>{result.new_statuscliente}</Typography>
                 <Typography>{formatDate(result.modifiedon)}</Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr 1fr",
+                  gap: 1,
+                }}
+              >
                 <Typography variant="h6">ORIGEN:</Typography>
                 <Typography variant="h6">DESTINO:</Typography>
                 <Typography variant="h6">PESO:</Typography>
                 <Typography variant="h6">TRANSPORTE:</Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr 1fr",
+                  gap: 1,
+                }}
+              >
                 <Typography>{getOrigenName(result.new_origen)}</Typography>
                 <Typography>{getDestinoName(result.new_destino)}</Typography>
                 <Typography>{result.new_peso}</Typography>
-                <Typography>{getTransporteName(result.new_transporte)}</Typography>
+                <Typography>
+                  {getTransporteName(result.new_transporte)}
+                </Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}
+              >
                 <Typography variant="h6">COMMODITY:</Typography>
                 <Typography variant="h6">CANTIDAD DE BULTOS:</Typography>
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+              <Box
+                sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}
+              >
                 <Typography>{result.new_commodity}</Typography>
                 <Typography>{result.new_contidadbultos}</Typography>
               </Box>

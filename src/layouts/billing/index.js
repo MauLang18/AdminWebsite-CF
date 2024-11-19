@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -54,7 +55,7 @@ function Billing() {
   const handleSearch = async () => {
     try {
       const response = await axios.get(
-        `https://api.logisticacastrofallas.com/api/Itinerario?polFilter=${pol}&poeFilter=${pod}&transporteFilter=${transportMode}&modalidadFilter=${modalidad}`
+        `https://api.logisticacastrofallas.com/api/Itinerario?polFilter=${pol}&poeFilter=${pod}&transporteFilter=${transportMode}&modalidadFilter=${modalidad}&StateFilter=1`
       );
       const newRows = response.data.data
         .filter((rowData) => rowData.estado === 1)
@@ -183,6 +184,11 @@ function Billing() {
     fetchPolPodOptions();
   }, []);
 
+  const handleDownloadExcel = () => {
+    const downloadUrl = `https://api.logisticacastrofallas.com/api/Itinerario?polFilter=${pol}&poeFilter=${pod}&transporteFilter=${transportMode}&modalidadFilter=${modalidad}&Download=True&StateFilter=1`;
+    window.open(downloadUrl, "_blank");
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -274,15 +280,28 @@ function Billing() {
                     />
                   </Grid>
                 </Grid>
-                <Button
-                  variant="contained"
-                  color="black"
-                  onClick={handleSearch}
-                  startIcon={<SearchIcon />}
-                  sx={{ mt: 3 }}
-                >
-                  Buscar
-                </Button>
+                <Grid container spacing={2} sx={{ mt: 3 }}>
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      color="black"
+                      onClick={handleSearch}
+                      startIcon={<SearchIcon />}
+                    >
+                      Buscar
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={handleDownloadExcel}
+                      startIcon={<FileDownloadIcon />}
+                    >
+                      Descargar Excel
+                    </Button>
+                  </Grid>
+                </Grid>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
