@@ -14,8 +14,9 @@ export default function MyComponent() {
     // Llamada a la API al montar el componente
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://api.logisticacastrofallas.com/api/Itinerario`);
-        console.log(response.data);
+        const response = await axios.get(
+          `https://api.logisticacastrofallas.com/api/Itinerario`
+        );
         setApiData(response.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);

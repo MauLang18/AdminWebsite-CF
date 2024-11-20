@@ -41,22 +41,30 @@ function WHS(props) {
     // Función para obtener la imagen del país desde la API local
     const fetchCountryImage = async () => {
       try {
-        const response = await axios.get("https://api.logisticacastrofallas.com/api/Origen/Select");  // URL dinámica
-        const responseData = response.data;  // Deserializar los datos aquí
+        const response = await axios.get(
+          "https://api.logisticacastrofallas.com/api/Origen/Select"
+        ); // URL dinámica
+        const responseData = response.data; // Deserializar los datos aquí
 
         if (responseData.isSuccess) {
-          const data = responseData.data;  // Obtener directamente la propiedad 'data'
+          const data = responseData.data; // Obtener directamente la propiedad 'data'
 
           // Asegurarse de que 'data' sea un arreglo y tenga al menos un elemento
           if (Array.isArray(data) && data.length > 0) {
             const countryData = data.find(
-              (item) => item.description && item.description.toLowerCase() === pol.split(", ")[1].toLowerCase()
+              (item) =>
+                item.description &&
+                item.description.toLowerCase() ===
+                  pol.split(", ")[1].toLowerCase()
             );
             if (countryData) {
-              console.log(countryData.description); // Verificar la descripción del país
               setCountryImage(countryData.id); // Guardar la URL de la imagen encontrada
             } else {
-              console.warn(`No se encontró la imagen para ${pol.split(", ")[1].toLowerCase()}`);
+              console.warn(
+                `No se encontró la imagen para ${pol
+                  .split(", ")[1]
+                  .toLowerCase()}`
+              );
               setCountryImage(null); // No mostrar ninguna imagen si no se encuentra ninguna válida
             }
           } else {
@@ -64,7 +72,10 @@ function WHS(props) {
             setCountryImage(null); // No mostrar ninguna imagen si no hay datos válidos
           }
         } else {
-          console.error("Error en la respuesta de la API:", responseData.message);
+          console.error(
+            "Error en la respuesta de la API:",
+            responseData.message
+          );
           setCountryImage(null); // No mostrar ninguna imagen en caso de error en la respuesta
         }
       } catch (error) {
@@ -89,7 +100,10 @@ function WHS(props) {
       minute: "2-digit",
       second: "2-digit",
     };
-    const formattedDateTime = new Date(dateTimeString).toLocaleString("es-ES", options);
+    const formattedDateTime = new Date(dateTimeString).toLocaleString(
+      "es-ES",
+      options
+    );
 
     return formattedDateTime;
   };
@@ -174,14 +188,22 @@ function WHS(props) {
           ),
           whsReceipt: (
             <MDTypography variant="caption" color="text" fontWeight="medium">
-              <a target="_blank" rel="noopener noreferrer" href={rowData.whsReceipt}>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={rowData.whsReceipt}
+              >
                 WHS Receipt
               </a>
             </MDTypography>
           ),
           documentoregistro: (
             <MDTypography variant="caption" color="text" fontWeight="medium">
-              <a target="_blank" rel="noopener noreferrer" href={rowData.documentoregistro}>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={rowData.documentoregistro}
+              >
                 Documentación Registro
               </a>
             </MDTypography>
@@ -202,24 +224,30 @@ function WHS(props) {
       setRows(newRows);
 
       // Logging request for success
-      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`,
-        Modulo: "WHS",
-        TipoMetodo: "Busqueda",
-        Parametros: JSON.stringify({ pol, textFilter }),
-        Estado: 1,
-      });
+      await axios.post(
+        "https://api.logisticacastrofallas.com/api/Logs/Register",
+        {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "WHS",
+          TipoMetodo: "Busqueda",
+          Parametros: JSON.stringify({ pol, textFilter }),
+          Estado: 1,
+        }
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
 
       // Log the error
-      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`,
-        Modulo: "WHS",
-        TipoMetodo: "Busqueda",
-        Parametros: JSON.stringify({ pol, textFilter }),
-        Estado: 0,
-      });
+      await axios.post(
+        "https://api.logisticacastrofallas.com/api/Logs/Register",
+        {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "WHS",
+          TipoMetodo: "Busqueda",
+          Parametros: JSON.stringify({ pol, textFilter }),
+          Estado: 0,
+        }
+      );
     }
   };
 
@@ -234,7 +262,9 @@ function WHS(props) {
     axios
       .get(url, { responseType: "blob" })
       .then((response) => {
-        const blob = new Blob([response.data], { type: response.headers["content-type"] });
+        const blob = new Blob([response.data], {
+          type: response.headers["content-type"],
+        });
         const filename = "tramites_activos.xlsx";
         if (window.navigator.msSaveOrOpenBlob) {
           // IE
@@ -264,8 +294,12 @@ function WHS(props) {
       const controlInventarioUrl = response.data.data[0]?.controlInventario;
 
       if (controlInventarioUrl) {
-        const inventoryResponse = await axios.get(controlInventarioUrl, { responseType: "blob" });
-        const blob = new Blob([inventoryResponse.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        const inventoryResponse = await axios.get(controlInventarioUrl, {
+          responseType: "blob",
+        });
+        const blob = new Blob([inventoryResponse.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
         const filename = "control_inventario.xlsx";
         if (window.navigator.msSaveOrOpenBlob) {
           window.navigator.msSaveOrOpenBlob(blob, filename);
@@ -315,13 +349,21 @@ function WHS(props) {
                     <img
                       src={countryImage}
                       alt={`${pol.split(", ")[1]} flag`}
-                      style={{ width: "30px", height: "auto", marginRight: "10px" }}
+                      style={{
+                        width: "30px",
+                        height: "auto",
+                        marginRight: "10px",
+                      }}
                     />
                   )}
                   {pol}
                 </MDTypography>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <MDTypography variant="h6" color="white" style={{ marginRight: "10px" }}>
+                  <MDTypography
+                    variant="h6"
+                    color="white"
+                    style={{ marginRight: "10px" }}
+                  >
                     FILTRO:
                   </MDTypography>
                   <Select
@@ -339,7 +381,9 @@ function WHS(props) {
                     </MenuItem>
                     <MenuItem value={""}>Todos</MenuItem>
                     <MenuItem value={"En WHS"}>En WHS</MenuItem>
-                    <MenuItem value={"Preparando para Envio"}>Preparando para Envio</MenuItem>
+                    <MenuItem value={"Preparando para Envio"}>
+                      Preparando para Envio
+                    </MenuItem>
                     <MenuItem value={"Salida"}>Salida</MenuItem>
                   </Select>
                 </div>

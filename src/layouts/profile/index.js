@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import { Bar } from "react-chartjs-2";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { Bar, Doughnut } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
 // Material Dashboard 2 React components
@@ -17,10 +19,12 @@ import statusMapping from "../profile/json/status.json";
 
 // Overview page components
 import Header from "layouts/profile/components/Header";
+import Carrousel from "layouts/profile/components/PlatformSettings";
 
 function Overview() {
-  const [dashboardData, setDashboardData] = useState(null);
-  const [historialFilter, setHistorialFilter] = useState("mes"); // Mes, Trimestre, Año
+  const [activeData, setActiveData] = useState(null);
+  const [historyData, setHistoryData] = useState([]);
+  const [historialFilter, setHistorialFilter] = useState("mes"); // mes, trimestre, año
   const user = JSON.parse(localStorage.getItem("users"));
   const { name } = user;
 
@@ -28,28 +32,42 @@ function Overview() {
     return statusMapping[status] || "Desconocido";
   };
 
-  // Fetch data from the API
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchActiveData = async () => {
       try {
         const response = await axios.get(
           `https://api.logisticacastrofallas.com/api/TrackingLogin/Activo?cliente=${name}`
         );
-
         if (response.data.isSuccess) {
-          setDashboardData(response.data.data.value);
+          setActiveData(response.data.data.value);
         } else {
-          console.error("Error fetching data:", response.data.message);
+          console.error("Error fetching active data:", response.data.message);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching active data:", error);
       }
     };
 
-    fetchData();
-  }, []);
+    const fetchHistoryData = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.logisticacastrofallas.com/api/TrackingLogin/Finalizado?cliente=${name}`
+        );
+        if (response.data.isSuccess) {
+          setHistoryData(response.data.data.value);
+        } else {
+          console.error("Error fetching history data:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching history data:", error);
+      }
+    };
 
-  if (!dashboardData) {
+    fetchActiveData();
+    fetchHistoryData();
+  }, [name]);
+
+  if (!activeData || !historyData.length) {
     return (
       <DashboardLayout>
         <DashboardNavbar />
@@ -63,48 +81,72 @@ function Overview() {
     );
   }
 
-  // Cálculo de datos
-  const currentData = dashboardData[0];
+  const currentData = activeData[0];
   const { new_eta, new_diasdetransito, new_cbm, new_preestado2, new_etd1 } =
     currentData;
 
-  // Cálculo del porcentaje de progreso
+  // Progress calculation
   const etaDate = new Date(new_eta);
   const etdDate = new Date(new_etd1);
   const now = new Date();
-  const elapsedTime = Math.max(0, now - new Date(currentData.new_etd1)); // Tiempo transcurrido desde ETD
-  const totalTime = Math.max(0, etaDate - new Date(currentData.new_etd1)); // Tiempo total de tránsito
+  const elapsedTime = Math.max(0, now - etdDate);
+  const totalTime = Math.max(0, etaDate - etdDate);
   const progress =
     totalTime > 0 ? ((elapsedTime / totalTime) * 100).toFixed(2) : 0;
 
-  // Filtro de historial
-  const filterHistorialData = () => {
-    const now = new Date();
-    let startDate;
+  const groupHistorialData = () => {
+    const groupedData = {};
 
-    if (historialFilter === "mes") {
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    } else if (historialFilter === "trimestre") {
-      const quarterStartMonth = Math.floor(now.getMonth() / 3) * 3;
-      startDate = new Date(now.getFullYear(), quarterStartMonth, 1);
-    } else {
-      startDate = new Date(now.getFullYear(), 0, 1);
-    }
+    historyData.forEach((item) => {
+      const createdDate = new Date(item.createdon);
 
-    return dashboardData.filter(
-      (item) =>
-        new Date(item.new_eta) >= startDate && new Date(item.new_eta) <= now
-    );
+      let key;
+      if (historialFilter === "mes") {
+        key = createdDate.toLocaleDateString("es-ES", { month: "long" });
+      } else if (historialFilter === "trimestre") {
+        if (createdDate.getFullYear() === now.getFullYear()) {
+          const quarter = Math.floor(createdDate.getMonth() / 3);
+          const quarters = [
+            "Ene-Feb-Mar",
+            "Abr-May-Jun",
+            "Jul-Ago-Sep",
+            "Oct-Nov-Dic",
+          ];
+          key = quarters[quarter];
+        }
+      } else {
+        key = createdDate.getFullYear(); // Año
+      }
+
+      if (key) {
+        groupedData[key] = (groupedData[key] || 0) + 1;
+      }
+    });
+
+    return Object.entries(groupedData).map(([key, value]) => ({
+      label: key,
+      count: value,
+    }));
   };
 
-  const historialData = filterHistorialData();
+  const groupedHistorialData = groupHistorialData();
 
-  // Resumen de productos transportados
+  const historialChartData = {
+    labels: groupedHistorialData.map((item) => item.label),
+    datasets: [
+      {
+        label: "Cantidad de cargas",
+        data: groupedHistorialData.map((item) => item.count),
+        backgroundColor: "rgba(75, 192, 192, 0.5)",
+      },
+    ],
+  };
+
   const commodityData = {};
   let totalCbm = 0;
 
-  dashboardData.forEach((item) => {
-    totalCbm += item.new_cbm;
+  activeData.forEach((item) => {
+    totalCbm += item.new_cbm1;
     if (commodityData[item.new_commodity]) {
       commodityData[item.new_commodity] += 1;
     } else {
@@ -131,102 +173,94 @@ function Overview() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox mb={2} />
       <Header />
-      <MDBox mb={2} />
-
       <MDBox px={3}>
         <Grid container spacing={3}>
-          {/* Estado de la Carga */}
-          <Grid item xs={12} md={4}>
+          {/* Columna izquierda */}
+          <Grid item xs={12} md={6}>
             <Card>
               <MDBox p={3}>
-                <MDTypography variant="h6" color="text" fontWeight="medium">
+                <MDTypography variant="h6" fontWeight="medium">
                   Estado de la Carga
                 </MDTypography>
                 <MDBox mt={2}>
                   <MDTypography variant="h4" color="info">
                     {progress}% Completado
                   </MDTypography>
-                  <MDTypography variant="body2" color="text">
+                  <MDTypography>
                     Estado actual: {getStatusName(new_preestado2)}
                   </MDTypography>
                 </MDBox>
               </MDBox>
             </Card>
-          </Grid>
 
-          {/* Tiempos de Tránsito */}
-          <Grid item xs={12} md={4}>
-            <Card>
+            <Card sx={{ mt: 3 }}>
               <MDBox p={3}>
-                <MDTypography variant="h6" color="text" fontWeight="medium">
+                <MDTypography variant="h6" fontWeight="medium">
                   Tiempos de Tránsito
                 </MDTypography>
                 <MDBox mt={2}>
-                  <MDTypography variant="body1" color="text">
+                  <MDTypography>
                     ETD: {etdDate.toLocaleDateString()}
                   </MDTypography>
-                  <MDTypography variant="body1" color="text">
+                  <MDTypography>
                     ETA: {etaDate.toLocaleDateString()}
                   </MDTypography>
-                  <MDTypography variant="body1" color="text">
-                    Tiempo de Transito: {new_diasdetransito} días
-                  </MDTypography>
-                  <MDTypography variant="body1" color="text">
+                  <MDTypography>
                     Tiempo restante:{" "}
-                    {(totalTime - elapsedTime) / (1000 * 60 * 60 * 24)} días
+                    {(
+                      (totalTime - elapsedTime) /
+                      (1000 * 60 * 60 * 24)
+                    ).toFixed(1)}{" "}
+                    días
                   </MDTypography>
                 </MDBox>
               </MDBox>
             </Card>
           </Grid>
 
-          {/* Resumen de Productos Transportados */}
-          <Grid item xs={12} md={4}>
+          {/* Columna derecha */}
+          <Grid item xs={12} md={6}>
             <Card>
               <MDBox p={3}>
-                <MDTypography variant="h6" color="text" fontWeight="medium">
+                <MDTypography variant="h6" fontWeight="medium">
                   Resumen de Productos Transportados
                 </MDTypography>
                 <MDBox mt={2}>
-                  <Bar data={commodityChartData} />
-                  <MDTypography variant="body2" color="text">
-                    Volumen total transportado: {totalCbm} cbm
+                  <Doughnut data={commodityChartData} />
+                  <MDTypography>
+                    Volumen total transportado: {totalCbm.toFixed(2)} cbm
                   </MDTypography>
-                </MDBox>
-              </MDBox>
-            </Card>
-          </Grid>
-
-          {/* Historial de Envíos */}
-          <Grid item xs={12}>
-            <Card>
-              <MDBox p={3}>
-                <MDTypography variant="h6" color="text" fontWeight="medium">
-                  Historial de Envíos
-                </MDTypography>
-                <MDBox mt={2}>
-                  <Bar
-                    data={{
-                      labels: historialData.map((item) =>
-                        new Date(item.new_eta).toLocaleDateString()
-                      ),
-                      datasets: [
-                        {
-                          label: "Envíos",
-                          data: historialData.map((item) => item.new_cbm),
-                          backgroundColor: "rgba(75, 192, 192, 0.5)",
-                        },
-                      ],
-                    }}
-                  />
                 </MDBox>
               </MDBox>
             </Card>
           </Grid>
         </Grid>
+
+        <Card sx={{ mt: 3 }}>
+          <MDBox p={3}>
+            <MDTypography variant="h6">Historial de Envíos</MDTypography>
+            <MDBox mt={2} mb={3}>
+              <Select
+                value={historialFilter}
+                onChange={(e) => setHistorialFilter(e.target.value)}
+                displayEmpty
+                variant="outlined"
+                fullWidth
+              >
+                <MenuItem value="mes">Mes</MenuItem>
+                <MenuItem value="trimestre">Trimestre</MenuItem>
+                <MenuItem value="año">Año</MenuItem>
+              </Select>
+            </MDBox>
+            <Bar data={historialChartData} />
+          </MDBox>
+        </Card>
+        <br />
       </MDBox>
+      <MDBox mb={2} />
+      <Carrousel />
+      <MDBox mb={2} />
       <Footer />
     </DashboardLayout>
   );

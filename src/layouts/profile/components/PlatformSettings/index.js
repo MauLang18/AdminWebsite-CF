@@ -12,16 +12,16 @@ function ImageCarousel() {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    axios.get("https://api.logisticacastrofallas.com/api/Multimedia/Select")
-      .then(response => {
-        console.log("API response:", response.data);
+    axios
+      .get("https://api.logisticacastrofallas.com/api/Multimedia/Select")
+      .then((response) => {
         if (response.data.isSuccess && Array.isArray(response.data.data)) {
           setImages(response.data.data);
         } else {
           console.error("La respuesta de la API no es válida:", response.data);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error fetching images:", error);
       });
   }, []);
@@ -52,7 +52,11 @@ function ImageCarousel() {
       <Slider {...settings}>
         {images.map((image, index) => (
           <div key={index} style={{ padding: "20px" }}>
-            <img src={image.description} alt={`Image ${index}`} style={{ width: "100%", height: "100%" }} />
+            <img
+              src={image.description}
+              alt={`Image ${index}`}
+              style={{ width: "100%", height: "100%" }}
+            />
           </div>
         ))}
       </Slider>
