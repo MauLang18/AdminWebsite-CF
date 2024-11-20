@@ -68,7 +68,6 @@ function Projects() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Success:", data);
         closeAddDialog();
         // Recargar datos después de enviar el formulario
         const { columns, rows } = data();
@@ -100,7 +99,12 @@ function Projects() {
 
   return (
     <Card>
-      <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+      <MDBox
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        p={3}
+      >
         <MDBox>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <MDButton variant="gradient" color="dark" onClick={openMenu}>
@@ -125,15 +129,27 @@ function Projects() {
         <DialogContent>
           <FormControl fullWidth margin="normal">
             <InputLabel htmlFor="nombre">Nombre</InputLabel>
-            <Input id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+            <Input
+              id="nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+            />
           </FormControl>
           <FormControl fullWidth margin="normal">
             <InputLabel htmlFor="apellido">Apellido</InputLabel>
-            <Input id="apellido" value={apellido} onChange={(e) => setApellido(e.target.value)} />
+            <Input
+              id="apellido"
+              value={apellido}
+              onChange={(e) => setApellido(e.target.value)}
+            />
           </FormControl>
           <FormControl fullWidth margin="normal">
             <InputLabel htmlFor="correo">Correo</InputLabel>
-            <Input id="correo" value={correo} onChange={(e) => setCorreo(e.target.value)} />
+            <Input
+              id="correo"
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+            />
           </FormControl>
           <FormControl fullWidth margin="normal">
             <InputLabel htmlFor="contraseña">Contraseña</InputLabel>
@@ -146,7 +162,11 @@ function Projects() {
           </FormControl>
           <FormControl fullWidth margin="normal">
             <InputLabel htmlFor="cliente">Cliente</InputLabel>
-            <Input id="cliente" value={cliente} onChange={(e) => setCliente(e.target.value)} />
+            <Input
+              id="cliente"
+              value={cliente}
+              onChange={(e) => setCliente(e.target.value)}
+            />
           </FormControl>
           <FormControl fullWidth margin="normal">
             <InputLabel htmlFor="rol">Rol</InputLabel>
