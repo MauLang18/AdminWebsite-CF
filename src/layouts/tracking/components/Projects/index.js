@@ -63,10 +63,21 @@ const TrackingForm = () => {
   ];
 
   const prestados = {
+    100000000: ["salidaOrigen"],
     100000001: ["salidaOrigen"],
+    100000014: ["salidaOrigen"],
+    100000015: ["salidaOrigen"],
+    100000017: ["salidaOrigen"],
     100000002: ["enTransito"],
+    100000003: ["enTransito"],
+    100000007: ["enTransito"],
+    100000024: ["enTransito"],
+    100000025: ["enTransito"],
+    100000026: ["enTransito"],
+    100000027: ["enTransito"],
     100000004: ["llegadaDestino"],
-    100000008: ["entregaFinalizada"],
+    100000005: ["llegadaDestino"],
+    100000011: ["entregaFinalizada"],
   };
 
   const getProgress = (states) => {
@@ -250,7 +261,7 @@ const TrackingForm = () => {
                   <Typography>{getPoeName(result.new_poe) || "N/A"}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={3}>
-                  <Typography variant="subtitle1">ETE</Typography>
+                  <Typography variant="subtitle1">ETA</Typography>
                   <Typography>
                     {result.new_eta
                       ? new Date(result.new_eta).toLocaleString("es-ES")
