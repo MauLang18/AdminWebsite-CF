@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import MDTypography from "components/MDTypography";
 
 // Estilo para el modal
 const modalStyle = {
@@ -28,50 +19,64 @@ export default function MyComponent() {
   const [apiData, setApiData] = useState([]); // Datos de la API
   const [modalOpen, setModalOpen] = useState(false); // Controla la visibilidad del modal
   const [selectedLink, setSelectedLink] = useState(""); // Enlace seleccionado para el modal
+  const [loading, setLoading] = useState(true); // Indica si la API está cargando
+  const [error, setError] = useState(null); // Almacena errores si ocurren
 
   useEffect(() => {
-    // Llamada a la API
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const user = JSON.parse(localStorage.getItem("users"));
-        const { name, acr, email, family_name } = user;
+        if (!user)
+          throw new Error(
+            "No se encontraron datos del usuario en localStorage"
+          );
+
+        const { name } = user;
 
         const response = await axios.get(
           `https://api.logisticacastrofallas.com/api/Cotizacion?numFilter=3&textFilter=${name}`
         );
 
-        // Filtrar por new_clienteweb === true
-        const filteredData = (response.data.data.value || []).filter(
-          (item) => item.new_clienteweb === true
-        );
+        const filteredData =
+          response?.data?.data?.value?.filter((item) => item.new_clienteweb) ||
+          [];
 
-        setApiData(filteredData);
+        setApiData(filteredData); // Asegurarte de que sea un array
 
-        // Registro del log en caso de éxito
         await axios.post(
           "https://api.logisticacastrofallas.com/api/Logs/Register",
           {
-            Usuario: `${family_name} / ${email} / ${acr}`,
+            Usuario: `${user.family_name} / ${user.email} / ${user.acr}`,
             Modulo: "Cotizaciones",
             TipoMetodo: "Busqueda",
             Parametros: "",
             Estado: 1,
           }
         );
-      } catch (error) {
-        console.error("Error al obtener los datos:", error);
+      } catch (err) {
+        console.error("Error al obtener los datos:", err);
+        setError(err.message);
 
-        // Registro del log en caso de error
+        // Manejo de errores
+        const user = JSON.parse(localStorage.getItem("users")) || {};
         await axios.post(
           "https://api.logisticacastrofallas.com/api/Logs/Register",
           {
-            Usuario: `${family_name} / ${email} / ${acr}`,
+            Usuario: `${user.family_name || "Desconocido"} / ${
+              user.email || "Desconocido"
+            } / ${user.acr || "Desconocido"}`,
             Modulo: "Cotizaciones",
             TipoMetodo: "Busqueda",
             Parametros: "",
             Estado: 0,
           }
         );
+
+        setApiData([]); // Evitar errores al mapear
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -88,58 +93,33 @@ export default function MyComponent() {
     setSelectedLink("");
   };
 
-  return (
-    <>
-      {/* Tabla */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">ID INTERNO</TableCell>
-              <TableCell align="center">CLIENTE</TableCell>
-              <TableCell align="center">COTIZACIÓN</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {apiData.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell align="center">{row.quotenumber}</TableCell>
-                <TableCell align="center">{row._customerid_value}</TableCell>
-                <TableCell align="center">
-                  {row.new_enlacecotizacion ? (
-                    <Typography
-                      variant="body2"
-                      color="primary"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleOpenModal(row.new_enlacecotizacion)}
-                    >
-                      Ver enlace
-                    </Typography>
-                  ) : (
-                    "No disponible"
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+  return {
+    columns: [
+      { Header: "ID INTERNO", accessor: "idtra", align: "center" },
+      { Header: "CLIENTE", accessor: "nombreCliente", align: "center" },
+      {
+        Header: "COTIZACION",
+        accessor: "tipoExoneracion",
+        align: "center",
+      },
+    ],
 
-      {/* Modal */}
-      <Modal open={modalOpen} onClose={handleCloseModal}>
-        <Box sx={modalStyle}>
-          <Typography variant="h6" component="h2">
-            Enlace de Cotización
-          </Typography>
-          {selectedLink && (
-            <Typography variant="body1" sx={{ mt: 2 }}>
-              <a href={selectedLink} target="_blank" rel="noopener noreferrer">
-                {selectedLink}
-              </a>
-            </Typography>
-          )}
-        </Box>
-      </Modal>
-    </>
-  );
+    rows: apiData.map((rowData) => ({
+      idtra: (
+        <MDTypography variant="caption" color="text" fontWeight="medium">
+          {rowData.quotenumber}
+        </MDTypography>
+      ),
+      nombreCliente: (
+        <MDTypography variant="caption" color="text" fontWeight="medium">
+          {rowData._customerid_value}
+        </MDTypography>
+      ),
+      tipoExoneracion: (
+        <MDTypography variant="caption" color="text" fontWeight="medium">
+          <a href={rowData.new_enlacecotizacion}>SOLICITUD</a>
+        </MDTypography>
+      ),
+    })),
+  };
 }
