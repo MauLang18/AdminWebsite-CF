@@ -16,10 +16,13 @@ import WHS from "layouts/whs";
 import Exoneracion from "layouts/exoneracion";
 import Finance from "layouts/finance";
 import { Icon } from "@mui/material";
+import Cotizaciones from "layouts/cotizaciones";
 
 const fetchWHSData = async () => {
   try {
-    const response = await axios.get("https://api.logisticacastrofallas.com/api/Pol/Whs");
+    const response = await axios.get(
+      "https://api.logisticacastrofallas.com/api/Pol/Whs"
+    );
     return response.data.data;
   } catch (error) {
     console.error("Error fetching WHS data", error);
@@ -127,6 +130,13 @@ const useRoutes = () => {
               accessibleFor: ["2"],
               component: <Notifications />,
             },
+            {
+              name: "Cotizaciones",
+              key: "",
+              route: "/cotizaciones",
+              accessibleFor: ["23"],
+              component: <Cotizaciones />,
+            },
           ],
         },
         {
@@ -214,6 +224,12 @@ const useRoutes = () => {
           route: "/cotizacion",
           accessibleFor: ["2"],
           component: <Cotizacion />,
+        },
+        {
+          key: "23",
+          route: "/cotizaciones",
+          accessibleFor: ["2"],
+          component: <Cotizaciones />,
         },
         {
           key: "10",

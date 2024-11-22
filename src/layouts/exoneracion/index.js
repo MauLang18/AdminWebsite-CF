@@ -83,31 +83,39 @@ function Exoneracion() {
       setRows(newRows);
 
       // Logging request for success
-      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`,
-        Modulo: "Exoneracion",
-        TipoMetodo: "Busqueda",
-        Parametros: JSON.stringify({ textFilter }),
-        Estado: 1,
-      });
+      await axios.post(
+        "https://api.logisticacastrofallas.com/api/Logs/Register",
+        {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "Exoneracion",
+          TipoMetodo: "Busqueda",
+          Parametros: JSON.stringify({ textFilter }),
+          Estado: 1,
+        }
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
 
       // Log the error
-      await axios.post("https://api.logisticacastrofallas.com/api/Logs/Register", {
-        Usuario: `${family_name} / ${email} / ${acr}`,
-        Modulo: "Exoneracion",
-        TipoMetodo: "Busqueda",
-        Parametros: JSON.stringify({ textFilter }),
-        Estado: 0,
-      });
+      await axios.post(
+        "https://api.logisticacastrofallas.com/api/Logs/Register",
+        {
+          Usuario: `${family_name} / ${email} / ${acr}`,
+          Modulo: "Exoneracion",
+          TipoMetodo: "Busqueda",
+          Parametros: JSON.stringify({ textFilter }),
+          Estado: 0,
+        }
+      );
     }
   };
 
   const toggleDescription = (index) => {
     setRows((prevRows) =>
       prevRows.map((row, i) =>
-        i === index ? { ...row, showFullDescription: !row.showFullDescription } : row
+        i === index
+          ? { ...row, showFullDescription: !row.showFullDescription }
+          : row
       )
     );
   };
@@ -127,7 +135,9 @@ function Exoneracion() {
     axios
       .get(url, { responseType: "blob" })
       .then((response) => {
-        const blob = new Blob([response.data], { type: response.headers["content-type"] });
+        const blob = new Blob([response.data], {
+          type: response.headers["content-type"],
+        });
         const filename = "tramites_activos.xlsx";
         if (window.navigator.msSaveOrOpenBlob) {
           window.navigator.msSaveOrOpenBlob(blob, filename);
@@ -169,7 +179,11 @@ function Exoneracion() {
                 flexWrap="wrap"
               >
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <MDTypography variant="h6" color="white" style={{ marginRight: "10px" }}>
+                  <MDTypography
+                    variant="h6"
+                    color="white"
+                    style={{ marginRight: "10px" }}
+                  >
                     FILTRO:
                   </MDTypography>
                   <Select
@@ -210,7 +224,11 @@ function Exoneracion() {
                     rows: rows.map((row, index) => ({
                       ...row,
                       descripcion: (
-                        <MDTypography variant="caption" color="text" fontWeight="medium">
+                        <MDTypography
+                          variant="caption"
+                          color="text"
+                          fontWeight="medium"
+                        >
                           {row.showFullDescription
                             ? row.descripcion
                             : `${row.descripcion.slice(0, 10)}... `}
