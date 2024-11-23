@@ -36,7 +36,7 @@ export default function MyComponent() {
         const { name } = user;
 
         const response = await axios.get(
-          `https://api.logisticacastrofallas.com/api/Cotizacion?numFilter=3&textFilter=${name}`
+          `https://api.logisticacastrofallas.com/api/Cotizacion/Cliente?cliente=${name}`
         );
 
         const filteredData =
@@ -117,7 +117,7 @@ export default function MyComponent() {
       ),
       tipoExoneracion: (
         <MDTypography variant="caption" color="text" fontWeight="medium">
-          <a href={rowData.new_enlacecotizacion}>SOLICITUD</a>
+          <a href={rowData.new_enlacecotizacion}>VER COTIZACION</a>
         </MDTypography>
       ),
     })),
