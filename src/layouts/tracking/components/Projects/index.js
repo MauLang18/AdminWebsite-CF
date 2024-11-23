@@ -17,6 +17,8 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import BusinessIcon from "@mui/icons-material/Business";
 import DirectionsBoatIcon from "@mui/icons-material/DirectionsBoat";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import WarehouseIcon from "@mui/icons-material/Warehouse";
+import AnchorIcon from "@mui/icons-material/Anchor";
 import axios from "axios";
 import poeMapping from "./data/json/poe.json";
 import polMapping from "./data/json/pol.json";
@@ -48,51 +50,71 @@ const TrackingForm = () => {
   };
 
   const progressStates = [
-    { label: "Salida de Origen", icon: <BusinessIcon />, key: "salidaOrigen" },
-    { label: "En Tránsito", icon: <DirectionsBoatIcon />, key: "enTransito" },
+    { label: "Origen", icon: <BusinessIcon />, key: "origen" },
+    { label: "Transito", icon: <DirectionsBoatIcon />, key: "transito" },
     {
-      label: "Llegada al Destino",
-      icon: <LocalShippingIcon />,
-      key: "llegadaDestino",
+      label: "Puerto Entrada",
+      icon: <AnchorIcon />,
+      key: "puerto",
     },
     {
-      label: "Entrega Finalizada",
+      label: "Movimiento a WHS / HUB de Carga",
+      icon: <LocalShippingIcon />,
+      key: "movimiento",
+    },
+    {
+      label: "Cargas en WHS/HUB de carga",
+      icon: <WarehouseIcon />,
+      key: "cargas",
+    },
+    {
+      label: "Finalizado",
       icon: <CheckCircleIcon />,
-      key: "entregaFinalizada",
+      key: "finalizado",
     },
   ];
 
   const prestados = {
-    100000000: ["salidaOrigen"],
-    100000001: ["salidaOrigen"],
-    100000014: ["salidaOrigen"],
-    100000015: ["salidaOrigen"],
-    100000017: ["salidaOrigen"],
-    100000002: ["enTransito"],
-    100000003: ["enTransito"],
-    100000007: ["enTransito"],
-    100000024: ["enTransito"],
-    100000025: ["enTransito"],
-    100000026: ["enTransito"],
-    100000027: ["enTransito"],
-    100000004: ["llegadaDestino"],
-    100000005: ["llegadaDestino"],
-    100000011: ["entregaFinalizada"],
+    100000000: ["origen"],
+    100000001: ["origen"],
+    100000015: ["origen"],
+    100000014: ["origen"],
+    100000017: ["origen"],
+
+    100000002: ["transito"],
+
+    100000003: ["puerto"],
+    100000027: ["puerto"],
+
+    100000007: ["movimiento"],
+    100000024: ["movimiento"],
+
+    100000005: ["cargas"],
+    100000025: ["cargas"],
+    100000004: ["puerto"],
+    100000026: ["puerto"],
+
+    100000009: ["finalizado"],
+    100000011: ["finalizado"],
+    100000010: ["finalizado"],
+    100000023: ["finalizado"],
+    100000022: ["finalizado"],
+    100000008: ["finalizado"],
   };
 
   const getProgress = (states) => {
-    let progress = 0;
-    if (states.includes("salidaOrigen")) progress = 25;
-    if (states.includes("enTransito")) progress = 50;
-    if (states.includes("llegadaDestino")) progress = 75;
-    if (states.includes("entregaFinalizada")) progress = 100;
-    return progress;
+    const maxProgress = progressStates.length; // Total de pasos
+    const lastStateIndex = progressStates.findIndex((state) =>
+      states.includes(state.key)
+    );
+    if (lastStateIndex === -1) return 0; // Retornar 0 si no hay coincidencia
+    return ((lastStateIndex + 1) / maxProgress) * 100; // Progreso en porcentaje
   };
 
   const getStepColor = (stepIndex, currentStep) => {
-    if (stepIndex < currentStep) return "green";
-    if (stepIndex === currentStep) return "blue";
-    return "gray";
+    if (stepIndex < currentStep) return "green"; // Pasos completados
+    if (stepIndex === currentStep) return "blue"; // Paso actual
+    return "grey"; // Pasos pendientes
   };
 
   const getPoeName = (poe) => {
@@ -167,15 +189,52 @@ const TrackingForm = () => {
               </Typography>
 
               <Box sx={{ marginBottom: 4 }}>
-                <Stepper alternativeLabel activeStep={currentProgress / 25}>
+                <Stepper
+                  alternativeLabel
+                  activeStep={Math.floor(
+                    currentProgress / (100 / progressStates.length)
+                  )}
+                  sx={{
+                    "& .MuiStepConnector-line": {
+                      borderWidth: "6px", // Grosor de la línea
+                    },
+                    "& .MuiStepConnector-root": {
+                      "& .MuiStepConnector-line": {
+                        borderColor: (theme) =>
+                          theme.palette.mode === "light" ? "grey" : "white", // Color inicial
+                        transition: "border-color 0.3s ease",
+                      },
+                      "&.Mui-active .MuiStepConnector-line": {
+                        borderColor: "blue", // Color para el paso activo
+                      },
+                      "&.Mui-completed .MuiStepConnector-line": {
+                        borderColor: "green", // Color para los pasos completados
+                      },
+                    },
+                    "& .MuiStepIcon-root": {
+                      transform: "scale(2.5)", // Escala los íconos
+                    },
+                  }}
+                >
                   {progressStates.map((state, i) => (
                     <Step key={i}>
                       <StepLabel
                         icon={state.icon}
                         sx={{
-                          color: getStepColor(i, currentProgress / 25),
+                          color: getStepColor(
+                            i,
+                            Math.floor(
+                              currentProgress / (100 / progressStates.length)
+                            )
+                          ),
                           "& .MuiStepLabel-icon": {
-                            color: getStepColor(i, currentProgress / 25),
+                            transform: "scale(2.5)",
+                            color: getStepColor(
+                              i,
+                              Math.floor(
+                                currentProgress / (100 / progressStates.length)
+                              )
+                            ),
                           },
                         }}
                       >
@@ -207,7 +266,7 @@ const TrackingForm = () => {
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <Typography variant="subtitle1">Booking</Typography>
-                  <Typography>{result.new_booking || "N/A"}</Typography>
+                  <Typography>{result.new_bookingno || "N/A"}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <Typography variant="subtitle1">PO</Typography>
