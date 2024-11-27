@@ -2,8 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
 import { Bar, Doughnut } from "react-chartjs-2";
+import { DataGrid } from "@mui/x-data-grid";
 import statusMapping from "layouts/profile/json/status.json";
+import statusInversoMapping from "layouts/profile/json/statusInverso.json";
 import { TimeFrameSelector } from "layouts/profile/components/Charts/TimeFrameSelector";
 
 import MDBox from "components/MDBox";
@@ -31,9 +36,35 @@ Chart.register(
 
 function Charts() {
   const [activeData, setActiveData] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState([]);
+  const [modalTitle, setModalTitle] = useState("");
   const user = JSON.parse(localStorage.getItem("users"));
   const { name } = user;
   const [selectedTimeFrame, setSelectedTimeFrame] = useState("month");
+
+  const openModal = (title, filterFunctionOrData, isFiltered = false) => {
+    let filteredData;
+
+    // Si no está filtrado (isFiltered es false), aplicamos el filtro
+    if (!isFiltered) {
+      // Si es una función, ejecutamos el filtro sobre activeData
+      filteredData = activeData.filter(filterFunctionOrData);
+    } else if (isFiltered) {
+      // Si los datos ya están filtrados, los usamos directamente
+      filteredData = filterFunctionOrData;
+    }
+
+    console.log(filteredData);
+
+    setModalTitle(title);
+    setModalData(filteredData); // Pasa los datos filtrados al modal
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   // Función para manejar el cambio de la selección
   const handleTimeFrameChange = (newTimeFrame) => {
@@ -42,6 +73,10 @@ function Charts() {
 
   const getStatusName = (status) => {
     return statusMapping[status] || ""; // Use statusMapping to get the name, fallback to an empty string if no match
+  };
+
+  const getStatusCode = (status) => {
+    return statusInversoMapping[status] || ""; // Use statusMapping to get the name, fallback to an empty string if no match
   };
 
   const prestados = {
@@ -105,23 +140,16 @@ function Charts() {
     );
   }
 
-  // Función para filtrar y contar por categoría
-  const getCountByCategory = (category) => {
-    return activeData.filter((item) =>
-      prestados[item.new_preestado2]?.includes(category)
-    ).length;
-  };
-
   // Datos para los próximos 7 días
   const calculateUpcoming = (dateKey) => {
     const now = new Date();
     const sevenDaysFromNow = new Date();
     sevenDaysFromNow.setDate(now.getDate() + 7);
 
-    return activeData.filter((item) => {
+    return (item) => {
       const date = new Date(item[dateKey]);
       return date >= now && date <= sevenDaysFromNow;
-    }).length;
+    };
   };
 
   // Cálculo específico para ETA y confirmación de arribo
@@ -130,33 +158,59 @@ function Charts() {
     const sevenDaysFromNow = new Date();
     sevenDaysFromNow.setDate(now.getDate() + 7);
 
-    return activeData.filter((item) => {
+    return (item) => {
       const eta = item.new_eta ? new Date(item.new_eta) : null;
       const confirmation = item.new_confirmaciondearribo
         ? new Date(item.new_confirmaciondearribo)
         : null;
 
-      // Contamos si alguna de las fechas está dentro del rango
+      // Filtro si alguna fecha está dentro del rango de los próximos 7 días
       return (
         (eta && eta >= now && eta <= sevenDaysFromNow) ||
         (confirmation &&
           confirmation >= now &&
           confirmation <= sevenDaysFromNow)
       );
-    }).length;
+    };
   };
 
   const summaryData = [
     {
       label: "Coordinación Origen",
-      value: getCountByCategory("origen"),
+      value: activeData.filter((item) =>
+        prestados[item.new_preestado2]?.includes("origen")
+      ).length,
+      onClick: () =>
+        openModal(
+          "Coordinación Origen",
+          (item) => prestados[item.new_preestado2]?.includes("origen"),
+          false
+        ),
     },
-    { label: "Tránsito", value: getCountByCategory("transito") },
+    {
+      label: "Tránsito",
+      value: activeData.filter((item) =>
+        prestados[item.new_preestado2]?.includes("transito")
+      ).length,
+      onClick: () =>
+        openModal(
+          "Tránsito",
+          (item) => prestados[item.new_preestado2]?.includes("transito"),
+          false
+        ),
+    },
     {
       label: "Saliendo ETD",
-      value: calculateUpcoming("new_etd1"),
+      value: activeData.filter(calculateUpcoming("new_etd1")).length,
+      onClick: () =>
+        openModal("Saliendo ETD", calculateUpcoming("new_etd1"), false),
     },
-    { label: "Arrivando ETA", value: calculateArrivalsNext7Days() },
+    {
+      label: "Arrivando ETA",
+      value: activeData.filter(calculateArrivalsNext7Days()).length,
+      onClick: () =>
+        openModal("Arrivando ETA", calculateArrivalsNext7Days(), false),
+    },
   ];
 
   // Función para agrupar los datos por mes, trimestre o año
@@ -226,10 +280,49 @@ function Charts() {
   });
 
   // Contar la cantidad de cargas activas por estado
-  const estadoData = cargasActivas.reduce((acc, item) => {
+  const estadoData = activeData.reduce((acc, item) => {
     acc[item.new_preestado2] = (acc[item.new_preestado2] || 0) + 1;
     return acc;
   }, {});
+
+  const handleChartClick = (chartElement, claves) => {
+    if (!chartElement.length) return; // Verifica que se haya clickeado un elemento
+
+    // Obtén el índice del elemento clickeado
+    const index = chartElement[0].index;
+
+    // Verifica que el índice sea válido
+    if (index === undefined || index === null) {
+      console.error("Índice no definido en el evento del gráfico.");
+      return;
+    }
+
+    // Usar las claves originales para encontrar el estado correspondiente
+    const clickedKey = claves[index];
+
+    if (clickedKey === undefined) {
+      console.error("No se encontró una clave para el índice:", index);
+      return;
+    }
+
+    // Obtén el código del estado usando el mapeo inverso
+    const clickedLabel = getStatusName(clickedKey); // Encuentra el nombre del estado basado en la clave
+    const statusCode = getStatusCode(clickedLabel); // Encuentra el código basado en el nombre
+
+    if (!statusCode) {
+      console.error("No se encontró un código para el estado:", clickedLabel);
+      return;
+    }
+
+    // Define una función que devuelve los datos filtrados
+    const getFilteredData = () =>
+      activeData.filter(
+        (item) => Number(item.new_preestado2) === Number(statusCode)
+      );
+
+    // Abrir el modal pasando la función para filtrar los datos
+    openModal(`Detalles de: ${clickedLabel}`, getFilteredData, true);
+  };
 
   const groupByTimeHistory = (data, dateField, timeFrame) => {
     const grouped = {};
@@ -296,7 +389,19 @@ function Charts() {
               </MDTypography>
               <Grid container spacing={2} mt={2}>
                 {summaryData.map((data, index) => (
-                  <Grid item xs={3} key={index}>
+                  <Grid
+                    item
+                    xs={3}
+                    key={index}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    onClick={data.onClick} // Abre el modal al hacer clic
+                    className="cursor-pointer hover:bg-gray-100"
+                  >
                     <MDTypography variant="h3" color="primary">
                       {data.value}
                     </MDTypography>
@@ -395,6 +500,10 @@ function Charts() {
                     },
                   ],
                 }}
+                options={{
+                  onClick: (e, chartElement) =>
+                    handleChartClick(chartElement, claves),
+                }}
               />
             </MDBox>
           </Card>
@@ -421,6 +530,56 @@ function Charts() {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Modal */}
+      <Dialog open={isModalOpen} onClose={closeModal} maxWidth="lg" fullWidth>
+        <DialogTitle>{modalTitle}</DialogTitle>
+        <DialogContent>
+          {/* Tabla HTML */}
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={{ border: "1px solid #ddd", padding: "8px" }}>ID</th>
+                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+                  STATUS
+                </th>
+                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+                  ETD
+                </th>
+                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+                  ETA
+                </th>
+                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+                  Confirmación Arribo
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {modalData.map((item, index) => (
+                <tr key={index}>
+                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    {item.title}
+                  </td>
+                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    {getStatusName(item.new_preestado2)}
+                  </td>
+                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    {new Date(item.new_etd1).toLocaleString("es-ES")}
+                  </td>
+                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    {new Date(item.new_eta).toLocaleString("es-ES")}
+                  </td>
+                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    {new Date(item.new_confirmaciondearribo).toLocaleString(
+                      "es-ES"
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </DialogContent>
+      </Dialog>
     </MDBox>
   );
 }
