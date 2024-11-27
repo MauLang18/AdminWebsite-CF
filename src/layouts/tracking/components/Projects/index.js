@@ -91,8 +91,8 @@ const TrackingForm = () => {
 
     100000005: ["cargas"],
     100000025: ["cargas"],
-    100000004: ["puerto"],
-    100000026: ["puerto"],
+    100000004: ["cargas"],
+    100000026: ["cargas"],
 
     100000009: ["finalizado"],
     100000011: ["finalizado"],
