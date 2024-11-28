@@ -55,8 +55,6 @@ function Charts() {
       filteredData = filterFunctionOrData;
     }
 
-    console.log(filteredData);
-
     setModalTitle(title);
     setModalData(filteredData); // Pasa los datos filtrados al modal
     setIsModalOpen(true);
@@ -109,9 +107,9 @@ function Charts() {
   const consolidadaCbm = ["100000016", "100000005"];
 
   const preEstados = [
-    100000001, 100000000, 100000015, 100000014, 100000017, 100000009, 100000025,
-    100000026, 100000024, 100000002, 100000007, 100000003, 100000027, 100000005,
-    100000004,
+    100000001, 100000000, 100000015, 100000014, 100000017, 100000002, 100000003,
+    100000027, 100000007, 100000024, 100000005, 100000025, 100000004, 100000026,
+    100000009, 100000011,
   ];
 
   useEffect(() => {
@@ -280,48 +278,55 @@ function Charts() {
   });
 
   // Contar la cantidad de cargas activas por estado
-  const estadoData = activeData.reduce((acc, item) => {
+  const estadoData = cargasActivas.reduce((acc, item) => {
     acc[item.new_preestado2] = (acc[item.new_preestado2] || 0) + 1;
     return acc;
   }, {});
 
-  const handleChartClick = (chartElement, claves) => {
-    if (!chartElement.length) return; // Verifica que se haya clickeado un elemento
+  const handleChartClick = (chartElement, claves, commodityData) => {
+    if (!chartElement.length) return;
 
-    // Obtén el índice del elemento clickeado
     const index = chartElement[0].index;
 
-    // Verifica que el índice sea válido
     if (index === undefined || index === null) {
       console.error("Índice no definido en el evento del gráfico.");
       return;
     }
 
-    // Usar las claves originales para encontrar el estado correspondiente
-    const clickedKey = claves[index];
+    const isStateChart = claves && index < claves.length;
+    const isCommodityChart =
+      commodityData && index < Object.keys(commodityData).length;
 
-    if (clickedKey === undefined) {
-      console.error("No se encontró una clave para el índice:", index);
-      return;
+    if (isStateChart) {
+      const clickedKey = claves[index];
+
+      if (clickedKey === undefined) {
+        console.error("No se encontró una clave para el índice:", index);
+        return;
+      }
+
+      const clickedLabel = getStatusName(clickedKey);
+      const statusCode = getStatusCode(clickedLabel);
+
+      if (!statusCode) {
+        console.error("No se encontró un código para el estado:", clickedLabel);
+        return;
+      }
+
+      const getFilteredData = () =>
+        activeData.filter(
+          (item) => Number(item.new_preestado2) === Number(statusCode)
+        );
+
+      openModal(`Detalles de: ${clickedLabel}`, getFilteredData, true);
+    } else if (isCommodityChart) {
+      const clickedLabel = Object.keys(commodityData)[index];
+
+      const getFilteredData = () =>
+        activeData.filter((item) => item.new_commodity === clickedLabel);
+
+      openModal(`Producto: ${clickedLabel}`, getFilteredData, true);
     }
-
-    // Obtén el código del estado usando el mapeo inverso
-    const clickedLabel = getStatusName(clickedKey); // Encuentra el nombre del estado basado en la clave
-    const statusCode = getStatusCode(clickedLabel); // Encuentra el código basado en el nombre
-
-    if (!statusCode) {
-      console.error("No se encontró un código para el estado:", clickedLabel);
-      return;
-    }
-
-    // Define una función que devuelve los datos filtrados
-    const getFilteredData = () =>
-      activeData.filter(
-        (item) => Number(item.new_preestado2) === Number(statusCode)
-      );
-
-    // Abrir el modal pasando la función para filtrar los datos
-    openModal(`Detalles de: ${clickedLabel}`, getFilteredData, true);
   };
 
   const groupByTimeHistory = (data, dateField, timeFrame) => {
@@ -477,6 +482,10 @@ function Charts() {
                       backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
                     },
                   ],
+                }}
+                options={{
+                  onClick: (e, chartElement) =>
+                    handleChartClick(chartElement, null, commodityData),
                 }}
               />
             </MDBox>
