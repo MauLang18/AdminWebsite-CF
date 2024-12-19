@@ -142,6 +142,7 @@ export default function MyComponent() {
       { Header: "CONTENEDOR 2", accessor: "CONTENEDOR2", align: "center" },
       { Header: "BCF", accessor: "BCF", align: "center" },
       { Header: "PO", accessor: "PO", align: "center" },
+      { Header: "PO 2", accessor: "PO2", align: "center" },
       { Header: "Estado", accessor: "estado", align: "center" },
       { Header: "Status cliente", accessor: "status", align: "center" },
       { Header: "Modificado", accessor: "employed", align: "center" },
@@ -162,12 +163,16 @@ export default function MyComponent() {
       { Header: "INCOTERM", accessor: "incoterm", align: "center" },
       { Header: "TRANSPORTE", accessor: "transporte", align: "center" },
       { Header: "SEAL", accessor: "seal", align: "center" },
+      { Header: "SEAL 2", accessor: "seal2", align: "center" },
       { Header: "# Factura", accessor: "factura", align: "center" },
+      { Header: "# Factura 2", accessor: "factura2", align: "center" },
       { Header: "Cant. Equipo", accessor: "cantEquipo", align: "center" },
       { Header: "Tamaño Equipo", accessor: "tamanoEquipo", align: "center" },
       { Header: "BULTOS", accessor: "bultos", align: "center" },
+      { Header: "BULTOS 2", accessor: "bultos2", align: "center" },
       { Header: "Shipper", accessor: "shipper", align: "center" },
       { Header: "Commodity", accessor: "commodity", align: "center" },
+      { Header: "Commodity 2", accessor: "commodity2", align: "center" },
       { Header: "Tarifa Asignada", accessor: "tarifa", align: "center" },
       { Header: "Estimado Facturar", accessor: "costo", align: "center" },
       { Header: "Facturas CF", accessor: "facturasCf", align: "center" },
@@ -222,6 +227,16 @@ export default function MyComponent() {
           fontWeight="medium"
         >
           {rowData.new_po}
+        </MDTypography>
+      ),
+      PO2: (
+        <MDTypography
+          component="a"
+          variant="caption"
+          color="text"
+          fontWeight="medium"
+        >
+          {rowData.new_po2}
         </MDTypography>
       ),
       estado: (
@@ -384,6 +399,16 @@ export default function MyComponent() {
           {rowData.new_seal}
         </MDTypography>
       ),
+      seal2: (
+        <MDTypography
+          component="a"
+          variant="caption"
+          color="text"
+          fontWeight="medium"
+        >
+          {rowData.new_seal2}
+        </MDTypography>
+      ),
       factura: (
         <MDTypography
           component="a"
@@ -392,6 +417,16 @@ export default function MyComponent() {
           fontWeight="medium"
         >
           {rowData.new_factura}
+        </MDTypography>
+      ),
+      factura2: (
+        <MDTypography
+          component="a"
+          variant="caption"
+          color="text"
+          fontWeight="medium"
+        >
+          {rowData.new_factura2}
         </MDTypography>
       ),
       cantEquipo: (
@@ -424,6 +459,16 @@ export default function MyComponent() {
           {rowData.new_contidadbultos}
         </MDTypography>
       ),
+      bultos2: (
+        <MDTypography
+          component="a"
+          variant="caption"
+          color="text"
+          fontWeight="medium"
+        >
+          {rowData.new_contidadbultos2}
+        </MDTypography>
+      ),
       shipper: (
         <MDTypography
           component="a"
@@ -442,6 +487,16 @@ export default function MyComponent() {
           fontWeight="medium"
         >
           {rowData.new_commodity}
+        </MDTypography>
+      ),
+      commodity2: (
+        <MDTypography
+          component="a"
+          variant="caption"
+          color="text"
+          fontWeight="medium"
+        >
+          {rowData.new_commodity2}
         </MDTypography>
       ),
       tarifa: (
